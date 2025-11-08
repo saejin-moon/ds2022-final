@@ -4,7 +4,11 @@ import io
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app)
+
+@app.route('/')
+def serve_frontend():
+    return send_file('index.html')
 
 @app.route('/process-data', methods=['POST'])
 def process_data():
@@ -27,15 +31,11 @@ def process_data():
     if not sort_column or sort_column not in df.columns:
         return jsonify({'error': f'Invalid or missing sort column: {sort_column}'}), 400
         
-    initial_rows = len(df)
     df_cleaned = df.dropna()
-    rows_dropped = initial_rows - len(df_cleaned)
-    print(f"Dropped {rows_dropped} rows due to missing data.")
 
     if ignored_columns:
         valid_ignored_columns = [col for col in ignored_columns if col in df_cleaned.columns]
         df_cleaned = df_cleaned.drop(columns=valid_ignored_columns, errors='ignore')
-        print(f"Dropped ignored columns: {valid_ignored_columns}")
 
     try:
         df_sorted = df_cleaned.sort_values(by=sort_column, ascending=True)
@@ -52,7 +52,6 @@ def process_data():
 
 @app.route('/get-columns', methods=['POST'])
 def get_columns():
-    """Endpoint to return column names immediately after file upload."""
     if 'csv_file' not in request.files:
         return jsonify({'error': 'No CSV file provided'}), 400
 
