@@ -31,12 +31,13 @@ def process_data():
     if not sort_column or sort_column not in df.columns:
         return jsonify({'error': f'Invalid or missing sort column: {sort_column}'}), 400
         
-    df_cleaned = df.dropna()
+    all_columns = set(df.columns)
+    valid_ignored_columns = set(col for col in ignored_columns if col in df.columns)
+    
+    subset_for_dropna = list(all_columns - valid_ignored_columns)
 
-    if ignored_columns:
-        valid_ignored_columns = [col for col in ignored_columns if col in df_cleaned.columns]
-        df_cleaned = df_cleaned.drop(columns=valid_ignored_columns, errors='ignore')
-
+    df_cleaned = df.dropna(subset=subset_for_dropna)
+    
     try:
         df_sorted = df_cleaned.sort_values(by=sort_column, ascending=True)
     except KeyError:

@@ -4,102 +4,339 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSV Processor App</title>
-    <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+    <!-- Include Grid.js Library -->
+    <script src="https://unpkg.com/gridjs/dist/gridjs.production.min.js"></script>
     <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
+    <!-- Include Feather Icons for the toggle switch -->
+    <script src="https://unpkg.com/feather-icons"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f9;
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        :root {
+            /* Light Theme */
+            --bg-color: #f8f9fa;
+            --container-bg: #ffffff;
+            --text-color: #212529;
+            --heading-color: #0d6efd;
+            --border-color: #dee2e6;
+            --input-bg: #f8f9fa;
+            --input-border: #ced4da;
+            --submit-bg: #0d6efd;
+            --submit-hover-bg: #0a58ca;
+            --download-bg: #198754;
+            --download-hover-bg: #157347;
+            --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+            --control-border: #e9ecef;
+            --scrollbar-track: #f1f1f1;
+            --scrollbar-thumb: #888;
         }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: #fff;
+
+        .dark-mode {
+            /* Dark Theme */
+            --bg-color: #1a1a2e;
+            --container-bg: #21213e;
+            --text-color: #e9e9f4;
+            --heading-color: #8c7ae6;
+            --border-color: #3b3a5d;
+            --input-bg: #2c2b4d;
+            --input-border: #4d4c73;
+            --submit-bg: #8c7ae6;
+            --submit-hover-bg: #6c5ce7;
+            --download-bg: #00b894;
+            --download-hover-bg: #00987a;
+            --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+            --control-border: #3b3a5d;
+            --scrollbar-track: #2a2a47;
+            --scrollbar-thumb: #55557d;
+        }
+
+        body {
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;           
+            margin: 0;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        /* Custom Scrollbar for better dark mode look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--heading-color);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--container-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Header and Toggle */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 15px;
         }
         h1 {
-            color: #333;
-            text-align: center;
+            color: var(--heading-color);
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin: 0;
         }
+        
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+        }
+        .toggle-switch > svg {
+            color: var(--text-color);
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 45px;
+            height: 25px;
+            margin: 0 10px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--input-border);
+            transition: 0.4s;
+            border-radius: 25px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 17px;
+            width: 17px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--heading-color);
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+
         .control-group {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid var(--control-border);
+            border-radius: 8px;
+            background-color: var(--container-bg);
+            box-shadow: var(--shadow);
         }
+        
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
         }
+        
         select, input[type="file"] {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            border: 1px solid var(--input-border);
+            border-radius: 6px;
             box-sizing: border-box;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            transition: border-color 0.3s, background-color 0.3s;
         }
+        select:focus, input[type="file"]:focus {
+            border-color: var(--heading-color);
+            outline: none;
+            box-shadow: 0 0 0 0.1rem var(--heading-color);
+        }
+        
         #ignore-columns-list {
-            max-height: 150px;
+            max-height: 200px;
             overflow-y: auto;
             padding: 10px;
-            border: 1px solid #eee;
-            border-radius: 4px;
-            background-color: #f9f9f9;
+            border: 1px solid var(--control-border);
+            border-radius: 6px;
+            background-color: var(--input-bg);
         }
         #ignore-columns-list div {
             margin-bottom: 5px;
+            padding: 3px 0;
+            display: flex;
+            align-items: center;
         }
+        #ignore-columns-list label {
+            margin-left: 8px;
+            margin-bottom: 0;
+            font-weight: 400;
+            display: inline;
+            cursor: pointer;
+        }
+        #ignore-columns-list input[type="checkbox"] {
+            width: auto;
+            height: 15px;
+        }
+
         .submit-button {
             display: block;
             width: 100%;
-            padding: 10px;
-            background-color: #007bff;
+            padding: 12px;
+            background-color: var(--submit-bg);
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.1s ease;
         }
-        .submit-button:hover {
-            background-color: #0056b3;
+        .submit-button:hover:not(:disabled) {
+            background-color: var(--submit-hover-bg);
+            transform: translateY(-1px);
         }
+        .submit-button:disabled {
+            background-color: var(--input-border);
+            cursor: not-allowed;
+        }
+        
         .loading {
             text-align: center;
-            padding: 10px;
-            color: #007bff;
+            padding: 15px;
+            color: var(--heading-color);
+            font-size: 1.1rem;
+            font-weight: 600;
         }
+        .feather-loading {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
         .download-link {
-            display: none; /* Hidden until processing is complete */
-            margin-top: 20px;
+            display: none;
+            margin-top: 25px;
             text-align: center;
         }
         .download-link a {
             text-decoration: none;
             color: #fff;
-            background-color: #28a745;
-            padding: 10px 15px;
-            border-radius: 4px;
-            transition: background-color 0.3s;
+            background-color: var(--download-bg);
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.1s;
         }
         .download-link a:hover {
-            background-color: #1e7e34;
+            background-color: var(--download-hover-bg);
+            transform: translateY(-1px);
         }
+        
         #results-container {
             margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--control-border);
+        }
+        #results-container p {
+            text-align: center;
+            padding: 20px;
+            border: 1px dashed var(--control-border);
+            border-radius: 4px;
+        }
+
+        /* --- Grid.js Custom Styling for Dark Mode --- */
+        .gridjs-container {
+            font-family: inherit;
+        }
+        .gridjs-head, .gridjs-footer {
+            background-color: var(--container-bg) !important;
+            border-top: 1px solid var(--control-border) !important;
+            color: var(--text-color) !important; /* Text color for pagination/search */
+        }
+        .gridjs-table {
+            border: 1px solid var(--control-border) !important;
+        }
+        .gridjs-th {
+            background-color: var(--submit-bg) !important; /* Column header background */
+            color: white !important;
+            border-bottom: 1px solid var(--control-border) !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+        .gridjs-th-sort:hover {
+            background-color: var(--submit-hover-bg) !important;
+        }
+        /* Grid data rows */
+        .gridjs-tr:nth-child(odd) {
+            background-color: var(--container-bg) !important;
+        }
+        .gridjs-tr:nth-child(even) {
+            background-color: var(--input-bg) !important; /* Slightly darker/lighter shade */
+        }
+        .gridjs-td {
+            border-right: 1px solid var(--control-border) !important;
+            color: var(--text-color) !important;
+            background-color: inherit !important;
+        }
+        .gridjs-search input, .gridjs-pages button {
+            background-color: var(--input-bg) !important;
+            color: var(--text-color) !important;
+            border: 1px solid var(--input-border) !important;
+        }
+        .gridjs-pages button.gridjs-currentPage {
+            background-color: var(--submit-bg) !important;
+            color: white !important;
+        }
+        
+        .gridjs-summary {
+            color: var(--text-color) !important;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>CSV Data Processor</h1>
+        <div class="header">
+            <h1>CSV Data Processor</h1>
+            <!-- Dark Mode Toggle -->
+            <div class="toggle-switch">
+                <i data-feather="sun" width="20" height="20"></i>
+                <label class="switch">
+                    <input type="checkbox" id="dark-mode-toggle">
+                    <span class="slider"></span>
+                </label>
+                <i data-feather="moon" width="20" height="20"></i>
+            </div>
+        </div>
 
         <div class="control-group">
             <label for="csv-file-input">Upload CSV File:</label>
@@ -107,33 +344,30 @@
         </div>
 
         <div class="control-group" id="column-controls" style="display: none;">
-            <!-- (1) Dropdowns populated by JS -->
             <label for="sort-column-select">Sort Data By Column:</label>
             <select id="sort-column-select"></select>
             
-            <br><br>
+            <br>
             
-            <label>Columns to Ignore (Dropped Before Sorting/Cleaning):</label>
+            <label>Columns to Ignore (NOT checked for empty values):</label>
             <div id="ignore-columns-list">
                 <!-- Checkboxes populated by JS -->
             </div>
 
-            <!-- (2) Submission Button -->
             <br>
-            <button class="submit-button" id="submit-button">Clean & Sort Data</button>
+            <button class="submit-button" id="submit-button" disabled>Clean & Sort Data</button>
         </div>
         
-        <div class="loading" id="loading-message" style="display: none;">Processing data, please wait...</div>
+        <div class="loading" id="loading-message" style="display: none;">
+            <i data-feather="loader" class="feather-loading" style="vertical-align: middle;"></i> Processing data, please wait...
+        </div>
 
-        <!-- (5) Download Link -->
         <div class="download-link" id="download-link-container">
             <a id="download-link" href="#" download="processed_data.csv">Download Processed CSV</a>
         </div>
 
-        <!-- (4) Grid.js Display Area -->
         <h2>Processed Data Preview</h2>
         <div id="results-container">
-            <!-- Grid.js table will be mounted here -->
             <p>Upload a file to begin processing.</p>
         </div>
 
@@ -149,26 +383,57 @@
         const loadingMessage = document.getElementById('loading-message');
         const downloadLinkContainer = document.getElementById('download-link-container');
         const downloadLink = document.getElementById('download-link');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
 
         let uploadedFile = null;
-        const BACKEND_URL = 'http://localhost:5000'; // Change if Flask port/host changes
+        const BACKEND_URL = ''; 
 
-        // --- Step 1: Handle File Upload and Column Population ---
+        feather.replace();
+
+        // --- Dark Mode Logic ---
+        function setDarkMode(isDark) {
+            if (isDark) {
+                document.documentElement.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            darkModeToggle.checked = true;
+            setDarkMode(true);
+        } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            darkModeToggle.checked = true;
+            setDarkMode(true);
+        } else {
+             setDarkMode(false);
+        }
+        
+        darkModeToggle.addEventListener('change', (e) => {
+            setDarkMode(e.target.checked);
+        });
+
+        // --- Main Application Logic ---
+
         fileInput.addEventListener('change', async (event) => {
             const file = event.target.files[0];
             if (!file) {
                 columnControls.style.display = 'none';
+                submitButton.disabled = true;
                 return;
             }
 
             uploadedFile = file;
 
-            // Use FormData to send the file to the backend to get headers
             const formData = new FormData();
             formData.append('csv_file', file);
+            
+            submitButton.disabled = true;
 
             try {
-                // Send a quick request to get only the column names
                 const response = await fetch(`${BACKEND_URL}/get-columns`, {
                     method: 'POST',
                     body: formData,
@@ -184,18 +449,19 @@
 
                 populateControls(columns);
                 columnControls.style.display = 'block';
-                downloadLinkContainer.style.display = 'none'; // Hide results from previous run
+                downloadLinkContainer.style.display = 'none';
                 resultsContainer.innerHTML = '<p>Select options and click "Clean & Sort Data" to process.</p>';
+                submitButton.disabled = false;
 
             } catch (error) {
                 console.error('Error fetching columns:', error);
                 alert('Failed to read CSV headers. Please check file format.');
                 columnControls.style.display = 'none';
+                submitButton.disabled = true;
             }
         });
 
         function populateControls(columns) {
-            // Populate Sort Column Dropdown
             sortColumnSelect.innerHTML = '';
             columns.forEach(col => {
                 const option = document.createElement('option');
@@ -204,7 +470,6 @@
                 sortColumnSelect.appendChild(option);
             });
 
-            // Populate Ignore Columns Checkbox List
             ignoreColumnsList.innerHTML = '';
             columns.forEach(col => {
                 const div = document.createElement('div');
@@ -216,7 +481,6 @@
                 const label = document.createElement('label');
                 label.htmlFor = `ignore-${col}`;
                 label.textContent = col;
-                label.style.display = 'inline'; // Override default label style
 
                 div.appendChild(checkbox);
                 div.appendChild(label);
@@ -224,57 +488,46 @@
             });
         }
 
-        // --- Step 2 & 3: Handle Submission and Expect Response ---
         submitButton.addEventListener('click', async () => {
             if (!uploadedFile) {
                 alert('Please upload a CSV file first.');
                 return;
             }
             
-            // Get selected values
             const sortColumn = sortColumnSelect.value;
             const ignoredCheckboxes = Array.from(ignoreColumnsList.querySelectorAll('input[type="checkbox"]:checked'));
             const ignoredColumns = ignoredCheckboxes.map(cb => cb.value).join(',');
 
-            // Prepare final FormData for data processing
             const formData = new FormData();
             formData.append('csv_file', uploadedFile);
             formData.append('sort_column', sortColumn);
             formData.append('ignored_columns', ignoredColumns);
             
-            // UI state change
             submitButton.disabled = true;
             loadingMessage.style.display = 'block';
             resultsContainer.innerHTML = '';
             downloadLinkContainer.style.display = 'none';
 
             try {
-                // Send the main processing request
                 const response = await fetch(`${BACKEND_URL}/process-data`, {
                     method: 'POST',
                     body: formData,
                 });
                 
                 if (!response.ok) {
-                    // Try to parse error message if it's JSON
                     let errorText = await response.text();
                     try {
                         const errorData = JSON.parse(errorText);
                         errorText = errorData.error || errorText;
                     } catch {
-                        // Keep the raw text if not JSON
                     }
                     throw new Error(`Processing Failed! ${errorText}`);
                 }
 
-                // (3) Expect the response to be the cleaned and pre-sorted csv file (text)
                 const processedCsvText = await response.text();
 
-                // (4) Display that csv file with grid.js.
                 displayCsvWithGridJs(processedCsvText);
 
-                // (5) Also have a link to download the processed csv file.
-                // Create a Blob from the received CSV text
                 const blob = new Blob([processedCsvText], { type: 'text/csv' });
                 const url = URL.createObjectURL(blob);
                 
@@ -283,17 +536,15 @@
 
             } catch (error) {
                 console.error('Error processing data:', error);
-                resultsContainer.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                resultsContainer.innerHTML = `<p style="color: red; border-color: red;">Error: ${error.message}</p>`;
                 downloadLinkContainer.style.display = 'none';
             } finally {
-                // Restore UI state
                 submitButton.disabled = false;
                 loadingMessage.style.display = 'none';
             }
         });
 
         function displayCsvWithGridJs(csvText) {
-            // Simple function to parse CSV text into data/headers for Grid.js
             const lines = csvText.trim().split('\n');
             if (lines.length < 1) {
                 resultsContainer.innerHTML = '<p>No data returned or file is empty.</p>';
@@ -303,7 +554,7 @@
             const headers = lines[0].split(',').map(h => h.trim());
             const data = lines.slice(1).map(line => line.split(','));
 
-            resultsContainer.innerHTML = ''; // Clear previous content
+            resultsContainer.innerHTML = '';
 
             new gridjs.Grid({
                 columns: headers,
@@ -315,7 +566,8 @@
                 },
                 style: {
                     table: {
-                        'white-space': 'nowrap'
+                        'white-space': 'nowrap',
+                        'width': '100%'
                     }
                 }
             }).render(resultsContainer);
