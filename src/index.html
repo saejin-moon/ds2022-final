@@ -364,6 +364,8 @@
 
         <div class="download-link" id="download-link-container">
             <a id="download-link" href="#" download="processed_data.csv">Download Processed CSV</a>
+            <br><br>
+            <a id="download-zip-link" href="#" style="display:none; background-color:#007bff;">Download Compressed CSV</a>
         </div>
 
         <h2>Processed Data Preview</h2>
@@ -384,6 +386,8 @@
         const downloadLinkContainer = document.getElementById('download-link-container');
         const downloadLink = document.getElementById('download-link');
         const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const downloadZipLink = document.getElementById('download-zip-link');
+
 
         let uploadedFile = null;
         const BACKEND_URL = ''; 
@@ -513,26 +517,42 @@
                     method: 'POST',
                     body: formData,
                 });
-                
+
                 if (!response.ok) {
                     let errorText = await response.text();
                     try {
                         const errorData = JSON.parse(errorText);
                         errorText = errorData.error || errorText;
-                    } catch {
-                    }
+                    } catch {}
                     throw new Error(`Processing Failed! ${errorText}`);
                 }
 
                 const processedCsvText = await response.text();
-
                 displayCsvWithGridJs(processedCsvText);
 
                 const blob = new Blob([processedCsvText], { type: 'text/csv' });
                 const url = URL.createObjectURL(blob);
-                
                 downloadLink.href = url;
                 downloadLinkContainer.style.display = 'block';
+
+                // Show compressed CSV link
+                downloadZipLink.style.display = 'inline-block';
+                downloadZipLink.onclick = async (e) => {
+                    e.preventDefault();
+                    const zipResp = await fetch(`${BACKEND_URL}/download-zip`);
+                    if (!zipResp.ok) {
+                        alert('No processed CSV available for download.');
+                        return;
+                    }
+                    const zipBlob = await zipResp.blob();
+                    const zipUrl = URL.createObjectURL(zipBlob);
+                    const a = document.createElement('a');
+                    a.href = zipUrl;
+                    a.download = 'processed_csv.zip';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                };
 
             } catch (error) {
                 console.error('Error processing data:', error);

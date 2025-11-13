@@ -2,9 +2,12 @@ import pandas as pd
 from flask import Flask, request, jsonify, send_file
 import io
 from flask_cors import CORS
+import zipfile
 
 app = Flask(__name__)
 CORS(app)
+
+processed_csv_buffer = None
 
 @app.route('/')
 def serve_frontend():
@@ -12,6 +15,8 @@ def serve_frontend():
 
 @app.route('/process-data', methods=['POST'])
 def process_data():
+    global processed_csv_buffer
+
     if 'csv_file' not in request.files:
         return jsonify({'error': 'No CSV file provided'}), 400
 
@@ -33,7 +38,6 @@ def process_data():
         
     all_columns = set(df.columns)
     valid_ignored_columns = set(col for col in ignored_columns if col in df.columns)
-    
     subset_for_dropna = list(all_columns - valid_ignored_columns)
 
     df_cleaned = df.dropna(subset=subset_for_dropna)
@@ -45,11 +49,29 @@ def process_data():
     except Exception as e:
         return jsonify({'error': f'Error during sorting: {e}'}), 500
 
-    buffer = io.StringIO()
-    df_sorted.to_csv(buffer, index=False)
-    buffer.seek(0)
+    processed_csv_buffer = io.StringIO()
+    df_sorted.to_csv(processed_csv_buffer, index=False)
+    processed_csv_buffer.seek(0)
     
-    return buffer.getvalue(), 200, {'Content-Type': 'text/csv'}
+    return processed_csv_buffer.getvalue(), 200, {'Content-Type': 'text/csv'}
+
+@app.route('/download-zip', methods=['GET'])
+def download_zip():
+    global processed_csv_buffer
+    if processed_csv_buffer is None:
+        return jsonify({'error': 'No processed CSV available'}), 400
+
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        zip_file.writestr('processed.csv', processed_csv_buffer.getvalue())
+
+    zip_buffer.seek(0)
+    return send_file(
+        zip_buffer,
+        mimetype='application/zip',
+        download_name='processed_csv.zip',
+        as_attachment=True
+    )
 
 @app.route('/get-columns', methods=['POST'])
 def get_columns():
@@ -69,4 +91,4 @@ def get_columns():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5001)
