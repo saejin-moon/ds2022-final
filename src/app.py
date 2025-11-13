@@ -66,6 +66,22 @@ def get_columns():
     except Exception as e:
         return jsonify({'error': f'Error reading CSV headers: {e}'}), 500
 
+@app.route('/remove-duplicates', methods=['POST'])
+def remove_duplicates():
+    if 'csv_file' not in request.files:
+        return jsonify({'error': 'No CSV file provided'}), 400
+
+    csv_file = request.files['csv_file']
+
+    try:
+        df = pd.read_csv(csv_file)
+        df_deduped = df.drop_duplicates()
+        buffer = io.StringIO()
+        df_deduped.to_csv(buffer, index=False)
+        buffer.seek(0)
+        return buffer.getvalue(), 200, {'Content-Type': 'text/csv'}
+    except Exception as e:
+        return jsonify({'error': f'Error removing duplicates: {e}'}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

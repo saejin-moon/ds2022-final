@@ -121,6 +121,9 @@
             <!-- (2) Submission Button -->
             <br>
             <button class="submit-button" id="submit-button">Clean & Sort Data</button>
+            <br><br>
+            <!-- Remove Duplicates button -->
+            <button class="submit-button" id="remove-duplicates-button">Remove Duplicates</button>
         </div>
         
         <div class="loading" id="loading-message" style="display: none;">Processing data, please wait...</div>
@@ -149,6 +152,7 @@
         const loadingMessage = document.getElementById('loading-message');
         const downloadLinkContainer = document.getElementById('download-link-container');
         const downloadLink = document.getElementById('download-link');
+        const removeDupesBtn = document.getElementById('remove-duplicates-button');
 
         let uploadedFile = null;
         const BACKEND_URL = 'http://localhost:5000'; // Change if Flask port/host changes
@@ -291,6 +295,53 @@
                 loadingMessage.style.display = 'none';
             }
         });
+
+        removeDupesBtn.addEventListener('click', async () => {
+            if (!uploadedFile) {
+                alert('Please upload a CSV file first.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('csv_file', uploadedFile);
+
+            // UI state changes
+            removeDupesBtn.disabled = true;
+            loadingMessage.style.display = 'block';
+            resultsContainer.innerHTML = '';
+            downloadLinkContainer.style.display = 'none';
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/remove-duplicates`, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to remove duplicates.');
+                }
+
+                // Get CSV text instead of downloading
+                const csvText = await response.text();
+
+                // Update Grid.js preview
+                displayCsvWithGridJs(csvText);
+
+                // Update download link (optional: reuse existing download button)
+                const blob = new Blob([csvText], { type: 'text/csv' });
+                downloadLink.href = URL.createObjectURL(blob);
+                downloadLinkContainer.style.display = 'block';
+
+            } catch (error) {
+                console.error('Error removing duplicates:', error);
+                resultsContainer.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+            } finally {
+                removeDupesBtn.disabled = false;
+                loadingMessage.style.display = 'none';
+            }
+        });
+
 
         function displayCsvWithGridJs(csvText) {
             // Simple function to parse CSV text into data/headers for Grid.js
