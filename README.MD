@@ -1,3 +1,3 @@
-# ds2022 final
-yay. this is filler. <br>
-saejin doesn't know what he's doing.
+<center><strong>PROJECT: GRAHAM CRACKER</strong></center>
+<center><i>Breaking Data into Digestible Pieces</i></center>
+hehehe
