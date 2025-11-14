@@ -163,6 +163,11 @@
             font-weight: 600;
             color: var(--text-color);
         }
+
+        .form-text {
+            display: block;
+            margin-top: 6px;
+        }
         
         select, input[type="file"] {
             width: 100%;
@@ -274,6 +279,11 @@
             border-radius: 4px;
         }
 
+        #filter_expr {
+            max-width: 400px;
+            width: 100%;
+        }
+
         /* --- Grid.js Custom Styling for Dark Mode --- */
         .gridjs-container {
             font-family: inherit;
@@ -344,6 +354,16 @@
         </div>
 
         <div class="control-group" id="column-controls" style="display: none;">
+            <div class="form-group">
+                <label for="filter_expr">Filter Expression (e.g. Age > 30, Country == 'US', `Full Name` == "John Doe", `Employee Status` == "Active" and Age > 40)</label>
+                <input type="text" id="filter_expr" name="filter_expr" class="form-control"
+                    placeholder="Enter filter (uses pandas query syntax)">
+                <small class="form-text text-muted">
+                    Note: Column names must match exactly. If a column name contains spaces, wrap it in backticks (`). 
+                    Strings must be quoted. Use and/or for logical operators.
+
+                </small>
+            </div>
             <label for="sort-column-select">Sort Data By Column:</label>
             <select id="sort-column-select"></select>
             
@@ -502,6 +522,8 @@
             formData.append('csv_file', uploadedFile);
             formData.append('sort_column', sortColumn);
             formData.append('ignored_columns', ignoredColumns);
+            const filterExpr = document.getElementById('filter_expr').value;
+            formData.append('filter_expr', filterExpr);
             
             submitButton.disabled = true;
             loadingMessage.style.display = 'block';
