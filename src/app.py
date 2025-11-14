@@ -22,11 +22,18 @@ def process_data():
     sort_column = request.form.get('sort_column')
     ignored_columns_str = request.form.get('ignored_columns', '') 
     ignored_columns = [col.strip() for col in ignored_columns_str.split(',') if col.strip()]
+    filter_expr = request.form.get('filter_expr', '').strip()
 
     try:
         df = pd.read_csv(csv_file)
     except Exception as e:
         return jsonify({'error': f'Error reading CSV: {e}'}), 400
+    
+    if filter_expr:
+        try:
+            df = df.query(filter_expr)
+        except Exception as e:
+            return jsonify({'error': f'Invalid filter expression: {e}'}), 400
 
     if not sort_column or sort_column not in df.columns:
         return jsonify({'error': f'Invalid or missing sort column: {sort_column}'}), 400
