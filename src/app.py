@@ -1,8 +1,9 @@
 import pandas as pd
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, Response
 import io
 import zipfile
 from flask_cors import CORS
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -121,6 +122,98 @@ def download_zip():
         as_attachment=True,
         download_name='processed_data.zip'
     )
+
+# ------------------------------------------------------------------
+# New: basic CSV -> JSON, JSONL, Excel, Parquet converters
+# No extra cleaning logic; just raw CSV -> format.
+# ------------------------------------------------------------------
+
+def _read_uploaded_csv():
+    """Small helper: read csv_file from request into a DataFrame."""
+    if 'csv_file' not in request.files:
+        return None, ('No CSV file provided.', 400)
+    csv_file = request.files['csv_file']
+    if not csv_file.filename.endswith('.csv'):
+        return None, ('File must be a CSV.', 400)
+    try:
+        df = pd.read_csv(csv_file)
+        return df, None
+    except Exception as e:
+        return None, (f'Error reading CSV: {e}', 400)
+
+@app.route('/convert-json', methods=['POST'])
+def convert_json():
+    df, err = _read_uploaded_csv()
+    if err:
+        msg, code = err
+        return jsonify({'error': msg}), code
+
+    # Use pandas to_json so NaN -> null in JSON
+    json_str = df.to_json(orient='records')
+
+    return Response(
+        json_str,
+        mimetype='application/json',
+        headers={"Content-Disposition": 'attachment; filename="data.json"'}
+    )
+
+@app.route('/convert-jsonl', methods=['POST'])
+def convert_jsonl():
+    df, err = _read_uploaded_csv()
+    if err:
+        msg, code = err
+        return jsonify({'error': msg}), code
+
+    # First get proper JSON (with null), then turn into JSONL
+    json_str = df.to_json(orient='records')
+    records = json.loads(json_str)  # list of dicts, with None/null instead of NaN
+    lines = "\n".join(json.dumps(row, ensure_ascii=False) for row in records)
+
+    return Response(
+        lines,
+        mimetype='application/x-ndjson',
+        headers={"Content-Disposition": 'attachment; filename="data.jsonl"'}
+    )
+
+@app.route('/convert-excel', methods=['POST'])
+def convert_excel():
+    df, err = _read_uploaded_csv()
+    if err:
+        msg, code = err
+        return jsonify({'error': msg}), code
+
+    buffer = io.BytesIO()
+    # You may need: pip install xlsxwriter
+    with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+        df.to_excel(writer, index=False, sheet_name='Sheet1')
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        as_attachment=True,
+        download_name='data.xlsx'
+    )
+
+@app.route('/convert-parquet', methods=['POST'])
+def convert_parquet():
+    df, err = _read_uploaded_csv()
+    if err:
+        msg, code = err
+        return jsonify({'error': msg}), code
+
+    buffer = io.BytesIO()
+    df.to_parquet(buffer, index=False)
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        mimetype='application/x-parquet',
+        as_attachment=True,
+        download_name='data.parquet'
+    )
+
+# ------------------------------------------------------------------
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

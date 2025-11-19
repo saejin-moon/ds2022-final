@@ -1,3 +1,5 @@
 Flask
 pandas
 flask-cors
+xlsxwriter
+pyarrow

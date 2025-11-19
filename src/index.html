@@ -322,6 +322,18 @@
             text-decoration: none;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+        .download-link button {
+            padding: 12px 0;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: var(--download-bg);
+}
+
+    .download-link button:hover {
+            background-color: var(--download-hover-bg);
+            transform: translateY(-2px);
+}
+
         .action-button.submit-button {
             background-color: var(--submit-bg);
         }
@@ -340,12 +352,14 @@
         /* Download Buttons */
         .download-group {
             display: flex;
+            flex-wrap: wrap;
             gap: 15px;
             margin-top: 25px;
         }
         .download-group .download-link {
             flex: 1;
             display: block;
+            min-width: 140px;
         }
         .download-link a {
             padding: 12px 0;
@@ -586,13 +600,42 @@
                     
                     <!-- (a) Download Buttons -->
                     <div class="download-group" id="download-link-container" style="display: none;">
-                        <div class="download-link">
-                            <a id="download-link-csv" href="#" download="processed_data.csv">Download CSV <i data-feather="download" style="vertical-align: middle;"></i></a>
-                        </div>
-                        <div class="download-link">
-                            <button class="action-button zip-button" id="download-link-zip">Download ZIP <i data-feather="archive" style="vertical-align: middle;"></i></button>
-                        </div>
-                    </div>
+    <div class="download-link">
+        <a id="download-link-csv" href="#" download="processed_data.csv">
+            CSV <i data-feather="download" style="vertical-align: middle;"></i>
+        </a>
+    </div>
+    <!-- JSON -->
+    <div class="download-link">
+        <button class="action-button" id="download-json">
+            JSON <i data-feather="code" style="vertical-align: middle;"></i>
+        </button>
+    </div>
+    <!-- JSONL -->
+    <div class="download-link">
+        <button class="action-button" id="download-jsonl">
+            JSONL <i data-feather="file-text" style="vertical-align: middle;"></i>
+        </button>
+    </div>
+    <!-- Excel -->
+    <div class="download-link">
+        <button class="action-button" id="download-excel">
+            Excel <i data-feather="table" style="vertical-align: middle;"></i>
+        </button>
+    </div>
+    <!-- Parquet -->
+    <div class="download-link">
+        <button class="action-button" id="download-parquet">
+            Parquet <i data-feather="layers" style="vertical-align: middle;"></i>
+        </button>
+    </div>
+    <!-- ZIP moved to the far right -->
+    <div class="download-link">
+        <button class="action-button zip-button" id="download-link-zip">
+            ZIP <i data-feather="archive" style="vertical-align: middle;"></i>
+        </button>
+    </div>
+</div>
                     
                     <div id="results-container">
                         <p>No data processed yet. Return to Stage 2 to run the process.</p>
@@ -629,6 +672,12 @@
         const downloadLinkCsv = document.getElementById('download-link-csv');
         const downloadLinkZip = document.getElementById('download-link-zip');
         const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+        // NEW: extra download buttons
+        const downloadJsonBtn = document.getElementById('download-json');
+        const downloadJsonlBtn = document.getElementById('download-jsonl');
+        const downloadExcelBtn = document.getElementById('download-excel');
+        const downloadParquetBtn = document.getElementById('download-parquet');
 
         const carouselTrack = document.getElementById('carousel-track');
         const navPrev = document.getElementById('nav-prev');
@@ -821,6 +870,43 @@
             }
         });
 
+        // Helper to hit convert endpoints with processed CSV text
+        async function downloadConvertedFile(csvText, endpoint, filename) {
+            try {
+                const csvBlob = new Blob([csvText], { type: 'text/csv' });
+                const formData = new FormData();
+                formData.append('csv_file', csvBlob, 'processed_data.csv');
+
+                const response = await fetch(`${BACKEND_URL}${endpoint}`, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    let errorText = await response.text();
+                    try {
+                        const errJson = JSON.parse(errorText);
+                        errorText = errJson.error || errorText;
+                    } catch { /* not JSON */ }
+                    throw new Error(errorText);
+                }
+
+                const outBlob = await response.blob();
+                const url = URL.createObjectURL(outBlob);
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                console.error(`Error downloading ${filename}:`, err);
+                alert(`Failed to download ${filename}: ${err.message}`);
+            }
+        }
+
         // --- Stage 3: Results & Download Logic ---
         function setupDownloadLinks(csvText) {
             const blob = new Blob([csvText], { type: 'text/csv' });
@@ -857,6 +943,24 @@
                     alert('Failed to create and download ZIP file.');
                 }
             };
+
+            // Hook up the new format buttons using the processed CSV text
+            if (downloadJsonBtn) {
+                downloadJsonBtn.onclick = () =>
+                    downloadConvertedFile(csvText, '/convert-json', 'processed_data.json');
+            }
+            if (downloadJsonlBtn) {
+                downloadJsonlBtn.onclick = () =>
+                    downloadConvertedFile(csvText, '/convert-jsonl', 'processed_data.jsonl');
+            }
+            if (downloadExcelBtn) {
+                downloadExcelBtn.onclick = () =>
+                    downloadConvertedFile(csvText, '/convert-excel', 'processed_data.xlsx');
+            }
+            if (downloadParquetBtn) {
+                downloadParquetBtn.onclick = () =>
+                    downloadConvertedFile(csvText, '/convert-parquet', 'processed_data.parquet');
+            }
             
             downloadLinkContainer.style.display = 'flex';
         }
@@ -864,7 +968,7 @@
         // --- Grid Display ---
         function displayCsvWithGridJs(csvText) {
             const lines = csvText.trim().split('\n');
-            if (lines.length < 1 || lines.length === 1 && lines[0].trim() === '') {
+            if (lines.length < 1 || (lines.length === 1 && lines[0].trim() === '')) {
                 resultsContainer.innerHTML = '<p>No data returned or file is empty after filtering/cleaning.</p>';
                 return;
             }
