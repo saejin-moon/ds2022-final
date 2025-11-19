@@ -1,899 +1,1166 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSV Processor App</title>
-    <!-- Include Grid.js Library -->
-    <script src="https://unpkg.com/gridjs/dist/gridjs.production.min.js"></script>
-    <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
-    <!-- Include Feather Icons for the toggle switch and carousel -->
-    <script src="https://unpkg.com/feather-icons"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PROJECT GRAHAM CRACKER</title>
+        <!-- Include Grid.js Library -->
+        <script src="https://unpkg.com/gridjs/dist/gridjs.production.min.js"></script>
+        <link
+            href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css"
+            rel="stylesheet"
+        />
+        <!-- Include Feather Icons for the toggle switch and carousel -->
+        <script src="https://unpkg.com/feather-icons"></script>
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
 
-        :root {
-            /* Light Theme */
-            --bg-color: #f8f9fa;
-            --container-bg: #ffffff;
-            --text-color: #212529;
-            --heading-color: #0d6efd;
-            --primary-color: #0d6efd; /* Added for clarity */
-            --border-color: #dee2e6;
-            --input-bg: #f8f9fa;
-            --input-border: #ced4da;
-            --submit-bg: #0d6efd;
-            --submit-hover-bg: #0a58ca;
-            --download-bg: #198754;
-            --download-hover-bg: #157347;
-            --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
-            --shadow-lift: 0 1rem 2rem rgba(0, 0, 0, 0.15);
-            --control-border: #e9ecef;
-            --scrollbar-track: #f1f1f1;
-            --scrollbar-thumb: #888;
-            --focus-ring-color: rgba(13, 110, 253, 0.4);
-            --grid-cell-bg-odd: #ffffff;
-            --grid-cell-bg-even: #f0f0f0;
-            --grid-border-color: #dee2e6;
-            --grid-header-bg: var(--submit-bg);
-            --zip-bg: #6c757d;
-            --zip-hover-bg: #5a6268;
-            --toggle-track-bg: #e0e0e0;
-            --carousel-gap: 150px;
-        }
+            :root {
+                /* Light Theme */
+                --bg-color: #f8f9fa;
+                --container-bg: #ffffff;
+                --text-color: #212529;
+                --heading-color: #0d6efd;
+                --primary-color: #0d6efd; /* Added for clarity */
+                --border-color: #dee2e6;
+                --input-bg: #f8f9fa;
+                --input-border: #ced4da;
+                --submit-bg: #0d6efd;
+                --submit-hover-bg: #0a58ca;
+                --download-bg: #198754;
+                --download-hover-bg: #157347;
+                --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+                --shadow-lift: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+                --control-border: #e9ecef;
+                --scrollbar-track: #f1f1f1;
+                --scrollbar-thumb: #888;
+                --focus-ring-color: rgba(13, 110, 253, 0.4);
+                --grid-cell-bg-odd: #ffffff;
+                --grid-cell-bg-even: #f0f0f0;
+                --grid-border-color: #dee2e6;
+                --grid-header-bg: var(--submit-bg);
+                --zip-bg: #6c757d;
+                --zip-hover-bg: #5a6268;
+                --toggle-track-bg: #e0e0e0;
+                --carousel-gap: 150px;
+            }
 
-        .dark-mode {
-            /* Dark Theme */
-            --bg-color: #1a1a2e;
-            --container-bg: #21213e;
-            --text-color: #e9e9f4;
-            --heading-color: #8c7ae6;
-            --primary-color: #8c7ae6; /* Added for clarity */
-            --border-color: #3b3a5d;
-            --input-bg: #2c2b4d;
-            --input-border: #4d4c73;
-            --submit-bg: #8c7ae6;
-            --submit-hover-bg: #6c5ce7;
-            --download-bg: #00b894;
-            --download-hover-bg: #00987a;
-            --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
-            --shadow-lift: 0 1rem 2rem rgba(0, 0, 0, 0.4);
-            --control-border: #3b3a5d;
-            --scrollbar-track: #2a2a47;
-            --scrollbar-thumb: #55557d;
-            --focus-ring-color: rgba(140, 122, 230, 0.5);
-            --grid-cell-bg-odd: #2c2940;
-            --grid-cell-bg-even: #2c2940;
-            --grid-border-color: #ffffff;
-            --grid-header-bg: #483c7d;
-            --zip-bg: #4d4c73;
-            --zip-hover-bg: #3b3a5d;
-            --toggle-track-bg: #3b3a5d;
-            --carousel-gap: 150px;
-        }
+            .dark-mode {
+                /* Dark Theme */
+                --bg-color: #1a1a2e;
+                --container-bg: #21213e;
+                --text-color: #e9e9f4;
+                --heading-color: #8c7ae6;
+                --primary-color: #8c7ae6; /* Added for clarity */
+                --border-color: #3b3a5d;
+                --input-bg: #2c2b4d;
+                --input-border: #4d4c73;
+                --submit-bg: #8c7ae6;
+                --submit-hover-bg: #6c5ce7;
+                --download-bg: #00b894;
+                --download-hover-bg: #00987a;
+                --shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+                --shadow-lift: 0 1rem 2rem rgba(0, 0, 0, 0.4);
+                --control-border: #3b3a5d;
+                --scrollbar-track: #2a2a47;
+                --scrollbar-thumb: #55557d;
+                --focus-ring-color: rgba(140, 122, 230, 0.5);
+                --grid-cell-bg-odd: #2c2940;
+                --grid-cell-bg-even: #2c2940;
+                --grid-border-color: #ffffff;
+                --grid-header-bg: #483c7d;
+                --zip-bg: #4d4c73;
+                --zip-hover-bg: #3b3a5d;
+                --toggle-track-bg: #3b3a5d;
+                --carousel-gap: 150px;
+            }
 
-        body {
-            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            transition: background-color 0.3s, color 0.3s;
-        }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
-        ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--heading-color); }
+            body {
+                font-family:
+                    "Poppins", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                margin: 0;
+                padding: 20px;
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                transition:
+                    background-color 0.3s,
+                    color 0.3s;
+            }
 
-        /* (b) Expand carousel space */
-        .app-wrapper {
-            max-width: 95vw; /* Wider wrapper */
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+            /* Custom Scrollbar */
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+            ::-webkit-scrollbar-track {
+                background: var(--scrollbar-track);
+            }
+            ::-webkit-scrollbar-thumb {
+                background: var(--scrollbar-thumb);
+                border-radius: 4px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: var(--heading-color);
+            }
 
-        .container {
-            width: 100%;
-            max-width: 1100px; /* Maximize card width */
-            height: 70vh; /* (b) More vertical space */
-            min-height: 550px;
-            margin: 20px 0;
-            background: var(--container-bg);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            overflow: hidden; 
-            position: relative;
-            transition: box-shadow 0.3s ease;
-        }
-        .container:hover {
-            box-shadow: var(--shadow-lift);
-        }
+            /* (b) Expand carousel space */
+            .app-wrapper {
+                max-width: 95vw; /* Wider wrapper */
+                margin: 0 auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
 
-        /* Header and Toggle */
-        .header {
-            width: 100%;
-            max-width: 1100px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 15px;
-        }
-        h1, h2 {
-            font-family: 'Poppins', sans-serif;
-            color: var(--heading-color);
-            font-weight: 700;
-            margin: 0;
-        }
-        h1 { font-size: 1.8rem; }
-        h2 { font-size: 1.4rem; margin-bottom: 15px;}
-        
-        /* (a) Stylized Dark Mode Toggle */
-        .toggle-switch {
-            position: relative;
-            display: flex;
-            align-items: center;
-            padding: 5px;
-            background-color: var(--toggle-track-bg);
-            border-radius: 20px;
-        }
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .toggle-switch .icon {
-            z-index: 1;
-            color: var(--text-color);
-            transition: color 0.3s;
-        }
-        .toggle-switch input:checked + .slider-toggle + .sun-icon {
-            color: var(--primary-color);
-        }
-        .toggle-switch input:not(:checked) + .slider-toggle + .sun-icon + .moon-icon {
-            color: var(--primary-color);
-        }
+            .container {
+                width: 100%;
+                max-width: 1100px; /* Maximize card width */
+                height: 70vh; /* (b) More vertical space */
+                min-height: 550px;
+                margin: 20px 0;
+                background: var(--container-bg);
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: var(--shadow);
+                overflow: hidden;
+                position: relative;
+                transition: box-shadow 0.3s ease;
+            }
+            .container:hover {
+                box-shadow: var(--shadow-lift);
+            }
 
-        .slider-toggle {
-            position: absolute;
-            cursor: pointer;
-            top: 5px;
-            left: 5px;
-            right: 5px;
-            bottom: 5px;
-            background-color: transparent;
-            transition: 0.4s;
-            border-radius: 20px;
-        }
-        .slider-toggle:before {
-            position: absolute;
-            content: "";
-            height: 24px;
-            width: 24px;
-            left: 0;
-            bottom: 0;
-            background-color: var(--container-bg);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            transition: 0.4s;
-            border-radius: 50%;
-        }
-        .toggle-switch input:checked + .slider-toggle:before {
-            transform: translateX(30px); /* Adjust based on padding/size */
-        }
-        
-        /* Carousel Styling */
-        .carousel-track {
-            display: flex;
-            width: calc(300% + var(--carousel-gap) * 3); 
-            height: 100%;
-            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            gap: var(--carousel-gap);
-            padding: 0 50px;
-        }
-        .carousel-card {
-            width: calc((100% / 3) - var(--carousel-gap) * 2); 
-            flex-shrink: 0;
-            padding: 0; 
-            box-sizing: border-box;
-            overflow-y: auto; 
-        }
+            /* Header and Toggle */
+            .header {
+                width: 100%;
+                max-width: 1100px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 0;
+                border-bottom: 2px solid var(--border-color);
+                padding-bottom: 15px;
+            }
+            h1,
+            h2 {
+                font-family: "Poppins", sans-serif;
+                color: var(--heading-color);
+                font-weight: 700;
+                margin: 0;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.4rem;
+                margin-bottom: 15px;
+            }
 
-        /* (c) Navigation Arrows OUTSIDE the container */
-        .nav-container-wrapper {
-            width: 90%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            justify-content: space-between;
-            pointer-events: none; /* Allows mouse events to pass through */
-        }
-        .nav-button {
-            background: var(--primary-color);
-            border: none;
-            color: white;
-            padding: 15px; /* Larger hit area */
-            cursor: pointer;
-            border-radius: 50%;
-            z-index: 10;
-            opacity: 0.8;
-            transition: opacity 0.3s, background-color 0.3s, transform 0.2s;
-            pointer-events: auto;
-            box-shadow: var(--shadow);
-        }
-        .nav-button:hover:not(:disabled) {
-            opacity: 1;
-            background-color: var(--submit-hover-bg);
-            transform: scale(1.1);
-        }
-        .nav-button:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            transform: none;
-        }
+            /* (a) Stylized Dark Mode Toggle */
+            .toggle-switch {
+                position: relative;
+                display: flex;
+                align-items: center;
+                padding: 5px;
+                background-color: var(--toggle-track-bg);
+                border-radius: 20px;
+            }
+            .toggle-switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+            .toggle-switch .icon {
+                z-index: 1;
+                color: var(--text-color);
+                transition: color 0.3s;
+            }
+            .toggle-switch input:checked + .slider-toggle + .sun-icon {
+                color: var(--primary-color);
+            }
+            .toggle-switch
+                input:not(:checked)
+                + .slider-toggle
+                + .sun-icon
+                + .moon-icon {
+                color: var(--primary-color);
+            }
 
-        /* Rest of the controls and component styles remain largely the same, 
+            .slider-toggle {
+                position: absolute;
+                cursor: pointer;
+                top: 5px;
+                left: 5px;
+                right: 5px;
+                bottom: 5px;
+                background-color: transparent;
+                transition: 0.4s;
+                border-radius: 20px;
+            }
+            .slider-toggle:before {
+                position: absolute;
+                content: "";
+                height: 24px;
+                width: 24px;
+                left: 0;
+                bottom: 0;
+                background-color: var(--container-bg);
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+                transition: 0.4s;
+                border-radius: 50%;
+            }
+            .toggle-switch input:checked + .slider-toggle:before {
+                transform: translateX(30px); /* Adjust based on padding/size */
+            }
+
+            /* Carousel Styling */
+            .carousel-track {
+                display: flex;
+                width: calc(300% + var(--carousel-gap) * 3);
+                height: 100%;
+                transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                gap: var(--carousel-gap);
+                padding: 0 50px;
+            }
+            .carousel-card {
+                width: calc((100% / 3) - var(--carousel-gap) * 2);
+                flex-shrink: 0;
+                padding: 0;
+                box-sizing: border-box;
+                overflow-y: auto;
+            }
+
+            /* (c) Navigation Arrows OUTSIDE the container */
+            .nav-container-wrapper {
+                width: 90%;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                display: flex;
+                justify-content: space-between;
+                pointer-events: none; /* Allows mouse events to pass through */
+            }
+            .nav-button {
+                background: var(--primary-color);
+                border: none;
+                color: white;
+                padding: 15px; /* Larger hit area */
+                cursor: pointer;
+                border-radius: 50%;
+                z-index: 10;
+                opacity: 0.8;
+                transition:
+                    opacity 0.3s,
+                    background-color 0.3s,
+                    transform 0.2s;
+                pointer-events: auto;
+                box-shadow: var(--shadow);
+            }
+            .nav-button:hover:not(:disabled) {
+                opacity: 1;
+                background-color: var(--submit-hover-bg);
+                transform: scale(1.1);
+            }
+            .nav-button:disabled {
+                opacity: 0.3;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+            /* Rest of the controls and component styles remain largely the same,
            but included below for completeness and minor adjustments */
 
-        .control-group {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid var(--control-border);
-            border-radius: 8px;
-            background-color: var(--container-bg);
-            box-shadow: var(--shadow);
-            transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-        }
-        .control-group:hover {
-            border-color: var(--heading-color);
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--text-color);
-        }
-        
-        select, input[type="file"], input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid var(--input-border);
-            border-radius: 6px;
-            box-sizing: border-box;
-            background-color: var(--input-bg);
-            color: var(--text-color);
-            transition: border-color 0.3s, background-color 0.3s;
-        }
-        select:focus, input[type="file"]:focus, input[type="text"]:focus {
-            border-color: var(--heading-color);
-            outline: none;
-            box-shadow: 0 0 0 3px var(--focus-ring-color);
-        }
-        
-        #ignore-columns-list {
-            max-height: 150px;
-            overflow-y: auto;
-            padding: 10px;
-            border: 1px solid var(--control-border);
-            border-radius: 6px;
-            background-color: var(--input-bg);
-        }
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-            padding: 3px 0;
-        }
-        .checkbox-item label {
-            margin-left: 8px;
-            margin-bottom: 0;
-            font-weight: 400;
-            display: inline;
-            cursor: pointer;
-        }
-        .checkbox-item input[type="checkbox"] {
-            width: auto;
-            height: 15px;
-            margin: 0;
-        }
-        
-        /* Submission/Action Buttons */
-        .action-button, .download-link a {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
-            text-align: center;
-            text-decoration: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .action-button.submit-button {
-            background-color: var(--submit-bg);
-        }
-        .action-button.submit-button:hover:not(:disabled) {
-            background-color: var(--submit-hover-bg);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
-        }
-        .action-button:disabled {
-            background-color: var(--input-border);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
+            .control-group {
+                margin-bottom: 20px;
+                padding: 15px;
+                border: 1px solid var(--control-border);
+                border-radius: 8px;
+                background-color: var(--container-bg);
+                box-shadow: var(--shadow);
+                transition:
+                    border-color 0.3s ease,
+                    box-shadow 0.3s ease,
+                    background-color 0.3s ease;
+            }
+            .control-group:hover {
+                border-color: var(--heading-color);
+            }
 
-        /* Download Buttons */
-        .download-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-        }
-        .download-group .download-link {
-            flex: 1;
-            display: block;
-        }
-        .download-link a {
-            padding: 12px 0;
-            width: 100%;
-            box-sizing: border-box;
-            background-color: var(--download-bg);
-        }
-        .download-link a:hover {
-            background-color: var(--download-hover-bg);
-            transform: translateY(-2px);
-        }
-        .zip-button {
-            background-color: var(--zip-bg) !important;
-        }
-        .zip-button:hover {
-            background-color: var(--zip-hover-bg) !important;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 15px;
-            color: var(--heading-color);
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-        .feather-loading {
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        #results-container {
-            margin-top: 20px;
-            padding-top: 10px;
-        }
-        #results-container p {
-            text-align: center;
-            padding: 40px 20px;
-            border: 2px dashed var(--control-border);
-            border-radius: 8px;
-            font-style: italic;
-            color: var(--input-border);
-            background: var(--input-bg);
-            position: relative;
-            overflow: hidden;
-        }
-        /* Grid.js Custom Styling */
-        .gridjs-container { font-family: inherit; }
-        .gridjs-head, .gridjs-footer { background-color: var(--container-bg) !important; border-top: none !important; color: var(--text-color) !important; }
-        .gridjs-table { border: none !important; }
-        .gridjs-th { background-color: var(--grid-header-bg) !important; color: white !important; border-bottom: 1px solid var(--grid-border-color) !important; border-right: 1px solid var(--grid-border-color) !important; }
-        .gridjs-th-sort:hover { background-color: var(--submit-hover-bg) !important; }
-        .gridjs-tr { background-color: var(--grid-cell-bg-odd) !important; }
-        .gridjs-tr:nth-child(even) { background-color: var(--grid-cell-bg-even) !important; }
-        .gridjs-td { border-right: 1px solid var(--grid-border-color) !important; border-bottom: 1px solid var(--grid-border-color) !important; color: var(--text-color) !important; background-color: inherit !important; }
-        .gridjs-tr:last-child .gridjs-td { border-bottom: none !important; }
-        .gridjs-tr .gridjs-td:last-child { border-right: none !important; }
-        .gridjs-search input, .gridjs-pages button { background-color: var(--input-bg) !important; color: var(--text-color) !important; border: 1px solid var(--input-border) !important; }
-        .gridjs-pages button.gridjs-currentPage { background-color: var(--submit-bg) !important; color: white !important; }
-        
-        /* (a) NEW FANCY TOGGLE STYLES */
-        .fancy-toggle-switch {
-            /* Define dimensions */
-            width: 60px;
-            height: 30px;
-            position: relative;
-            user-select: none;
-        }
-        
-        .toggle-checkbox {
-            /* Hide the default checkbox */
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .toggle-label {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--toggle-track-bg);
-            border-radius: 30px;
-            cursor: pointer;
-            overflow: hidden;
-            transition: background-color 0.3s ease;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2); /* Inset shadow for depth */
-        }
-        
-        /* Toggle Ball (The moving element) */
-        .toggle-ball {
-            position: absolute;
-            left: 30px;
-            width: 24px;
-            height: 24px;
-            background-color: var(--container-bg);
-            border-radius: 50%;
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-        }
-        
-        /* Icons within the toggle */
-        .toggle-icon {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            transition: opacity 0.4s, color 0.4s;
-        }
-        
-        .sun-icon {
-            left: 8px;
-            color: var(--text-color); /* Default sun color (Light theme icon) */
-            opacity: 0;
-        }
-        
-        .moon-icon {
-            right: 8px;
-            color: var(--text-color); /* Default moon color (Dark theme icon) */
-            opacity: 1;
-        }
-        
-        /* CHECKED (Dark Mode) STATE */
-        
-        /* Move the ball */
-        .toggle-checkbox:checked + .toggle-label .toggle-ball {
-            transform: translateX(-25px); /* 60px width - 3px padding * 2 - 24px ball = 30px move */
-            background-color: #f7f3e8; /* Moon color for the ball */
-        }
-        
-        /* Toggle track color change in dark mode */
-        .dark-mode .toggle-label {
-            background-color: #3b3a5d; /* Deeper dark background for contrast */
-        }
-        
-        /* Icon opacity and color swap on checked */
-        .toggle-checkbox:checked + .toggle-label .sun-icon {
-            opacity: 1; /* Show sun icon (white/light) */
-            color: #ffc107; /* Yellow/Orange sun color */
-        }
-        
-        .toggle-checkbox:checked + .toggle-label .moon-icon {
-            opacity: 0; /* Hide moon icon */
-            color: var(--text-color);
-        }
-        
-        /* Unchecked state in dark mode (if starting dark) */
-        .dark-mode .toggle-checkbox:not(:checked) + .toggle-label .moon-icon {
-            color: var(--primary-color);
-        }
-        .dark-mode .toggle-checkbox:not(:checked) + .toggle-label .sun-icon {
-            color: var(--text-color);
-        }
-        /* END NEW FANCY TOGGLE STYLES */
-    </style>
-</head>
-<body>
+            label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 600;
+                color: var(--text-color);
+            }
 
-    <div class="app-wrapper">
-        <div class="header">
-            <h1>Advanced CSV Processor</h1>
-            <!-- (a) Stylized Dark Mode Toggle -->
-            <!-- NEW FANCY TOGGLE -->
-            <div class="fancy-toggle-switch">
-                <input type="checkbox" id="dark-mode-toggle" class="toggle-checkbox">
-                <label for="dark-mode-toggle" class="toggle-label">
-                    <div class="toggle-ball"></div>
-                    <i data-feather="sun" class="toggle-icon sun-icon" width="18" height="18"></i>
-                    <i data-feather="moon" class="toggle-icon moon-icon" width="18" height="18"></i>
-                </label>
+            select,
+            input[type="file"],
+            input[type="text"] {
+                width: 100%;
+                padding: 10px;
+                margin-top: 5px;
+                border: 1px solid var(--input-border);
+                border-radius: 6px;
+                box-sizing: border-box;
+                background-color: var(--input-bg);
+                color: var(--text-color);
+                transition:
+                    border-color 0.3s,
+                    background-color 0.3s;
+            }
+            select:focus,
+            input[type="file"]:focus,
+            input[type="text"]:focus {
+                border-color: var(--heading-color);
+                outline: none;
+                box-shadow: 0 0 0 3px var(--focus-ring-color);
+            }
+
+            #ignore-columns-list {
+                max-height: 150px;
+                overflow-y: auto;
+                padding: 10px;
+                border: 1px solid var(--control-border);
+                border-radius: 6px;
+                background-color: var(--input-bg);
+            }
+            .checkbox-item {
+                display: flex;
+                align-items: center;
+                margin-bottom: 8px;
+                padding: 3px 0;
+            }
+            .checkbox-item label {
+                margin-left: 8px;
+                margin-bottom: 0;
+                font-weight: 400;
+                display: inline;
+                cursor: pointer;
+            }
+            .checkbox-item input[type="checkbox"] {
+                width: auto;
+                height: 15px;
+                margin: 0;
+            }
+
+            /* Submission/Action Buttons */
+            .action-button,
+            .download-link a {
+                display: block;
+                width: 100%;
+                padding: 12px;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 1rem;
+                font-weight: 600;
+                transition:
+                    background-color 0.3s ease,
+                    transform 0.1s ease,
+                    box-shadow 0.3s ease;
+                text-align: center;
+                text-decoration: none;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .action-button.submit-button {
+                background-color: var(--submit-bg);
+            }
+            .action-button.submit-button:hover:not(:disabled) {
+                background-color: var(--submit-hover-bg);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+            }
+            .action-button:disabled {
+                background-color: var(--input-border);
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+
+            /* Download Buttons */
+            .download-group {
+                display: flex;
+                gap: 15px;
+                margin-top: 25px;
+            }
+            .download-group .download-link {
+                flex: 1;
+                display: block;
+            }
+            .download-link a {
+                padding: 12px 0;
+                width: 100%;
+                box-sizing: border-box;
+                background-color: var(--download-bg);
+            }
+            .download-link a:hover {
+                background-color: var(--download-hover-bg);
+                transform: translateY(-2px);
+            }
+            .zip-button {
+                background-color: var(--zip-bg) !important;
+            }
+            .zip-button:hover {
+                background-color: var(--zip-hover-bg) !important;
+            }
+
+            .loading {
+                text-align: center;
+                padding: 15px;
+                color: var(--heading-color);
+                font-size: 1.1rem;
+                font-weight: 600;
+            }
+            .feather-loading {
+                animation: spin 1s linear infinite;
+            }
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            #results-container {
+                margin-top: 20px;
+                padding-top: 10px;
+            }
+            #results-container p {
+                text-align: center;
+                padding: 40px 20px;
+                border: 2px dashed var(--control-border);
+                border-radius: 8px;
+                font-style: italic;
+                color: var(--input-border);
+                background: var(--input-bg);
+                position: relative;
+                overflow: hidden;
+            }
+            /* Grid.js Custom Styling */
+            .gridjs-container {
+                font-family: inherit;
+            }
+            .gridjs-head,
+            .gridjs-footer {
+                background-color: var(--container-bg) !important;
+                border-top: none !important;
+                color: var(--text-color) !important;
+            }
+            .gridjs-table {
+                border: none !important;
+            }
+            .gridjs-th {
+                background-color: var(--grid-header-bg) !important;
+                color: white !important;
+                border-bottom: 1px solid var(--grid-border-color) !important;
+                border-right: 1px solid var(--grid-border-color) !important;
+            }
+            .gridjs-th-sort:hover {
+                background-color: var(--submit-hover-bg) !important;
+            }
+            .gridjs-tr {
+                background-color: var(--grid-cell-bg-odd) !important;
+            }
+            .gridjs-tr:nth-child(even) {
+                background-color: var(--grid-cell-bg-even) !important;
+            }
+            .gridjs-td {
+                border-right: 1px solid var(--grid-border-color) !important;
+                border-bottom: 1px solid var(--grid-border-color) !important;
+                color: var(--text-color) !important;
+                background-color: inherit !important;
+            }
+            .gridjs-tr:last-child .gridjs-td {
+                border-bottom: none !important;
+            }
+            .gridjs-tr .gridjs-td:last-child {
+                border-right: none !important;
+            }
+            .gridjs-search input,
+            .gridjs-pages button {
+                background-color: var(--input-bg) !important;
+                color: var(--text-color) !important;
+                border: 1px solid var(--input-border) !important;
+            }
+            .gridjs-pages button.gridjs-currentPage {
+                background-color: var(--submit-bg) !important;
+                color: white !important;
+            }
+
+            /* (a) NEW FANCY TOGGLE STYLES */
+            .fancy-toggle-switch {
+                /* Define dimensions */
+                width: 60px;
+                height: 30px;
+                position: relative;
+                user-select: none;
+            }
+
+            .toggle-checkbox {
+                /* Hide the default checkbox */
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+
+            .toggle-label {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: var(--toggle-track-bg);
+                border-radius: 30px;
+                cursor: pointer;
+                overflow: hidden;
+                transition: background-color 0.3s ease;
+                box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2); /* Inset shadow for depth */
+            }
+
+            /* Toggle Ball (The moving element) */
+            .toggle-ball {
+                position: absolute;
+                left: 30px;
+                width: 24px;
+                height: 24px;
+                background-color: var(--container-bg);
+                border-radius: 50%;
+                transition: transform 0.4s
+                    cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+            }
+
+            /* Icons within the toggle */
+            .toggle-icon {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                transition:
+                    opacity 0.4s,
+                    color 0.4s;
+            }
+
+            .sun-icon {
+                left: 8px;
+                color: var(
+                    --text-color
+                ); /* Default sun color (Light theme icon) */
+                opacity: 0;
+            }
+
+            .moon-icon {
+                right: 8px;
+                color: var(
+                    --text-color
+                ); /* Default moon color (Dark theme icon) */
+                opacity: 1;
+            }
+
+            /* CHECKED (Dark Mode) STATE */
+
+            /* Move the ball */
+            .toggle-checkbox:checked + .toggle-label .toggle-ball {
+                transform: translateX(
+                    -25px
+                ); /* 60px width - 3px padding * 2 - 24px ball = 30px move */
+                background-color: #f7f3e8; /* Moon color for the ball */
+            }
+
+            /* Toggle track color change in dark mode */
+            .dark-mode .toggle-label {
+                background-color: #3b3a5d; /* Deeper dark background for contrast */
+            }
+
+            /* Icon opacity and color swap on checked */
+            .toggle-checkbox:checked + .toggle-label .sun-icon {
+                opacity: 1; /* Show sun icon (white/light) */
+                color: #ffc107; /* Yellow/Orange sun color */
+            }
+
+            .toggle-checkbox:checked + .toggle-label .moon-icon {
+                opacity: 0; /* Hide moon icon */
+                color: var(--text-color);
+            }
+
+            /* Unchecked state in dark mode (if starting dark) */
+            .dark-mode
+                .toggle-checkbox:not(:checked)
+                + .toggle-label
+                .moon-icon {
+                color: var(--primary-color);
+            }
+            .dark-mode
+                .toggle-checkbox:not(:checked)
+                + .toggle-label
+                .sun-icon {
+                color: var(--text-color);
+            }
+            /* END NEW FANCY TOGGLE STYLES */
+            .header-flex {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="app-wrapper">
+            <div class="header">
+                <div class="header-flex">
+                    <h1>PROJECT GRAHAM CRACKER</h1>
+                    <span
+                        style="
+                            color: var(--text-color);
+                            font-family: &quot;Poppins&quot;;
+                            font-size: 1rem;
+                            margin-left: 10px;
+                        "
+                        >(hehehe)</span
+                    >
+                </div>
+                <!-- (a) Stylized Dark Mode Toggle -->
+                <!-- NEW FANCY TOGGLE -->
+                <div class="fancy-toggle-switch">
+                    <input
+                        type="checkbox"
+                        id="dark-mode-toggle"
+                        class="toggle-checkbox"
+                    />
+                    <label for="dark-mode-toggle" class="toggle-label">
+                        <div class="toggle-ball"></div>
+                        <i
+                            data-feather="sun"
+                            class="toggle-icon sun-icon"
+                            width="18"
+                            height="18"
+                        ></i>
+                        <i
+                            data-feather="moon"
+                            class="toggle-icon moon-icon"
+                            width="18"
+                            height="18"
+                        ></i>
+                    </label>
+                </div>
+                <!-- END NEW FANCY TOGGLE -->
             </div>
-            <!-- END NEW FANCY TOGGLE -->
-        </div>
 
-        <div class="container">
-            <div class="carousel-track" id="carousel-track">
-                
-                <!-- STAGE 1: UPLOAD -->
-                <div class="carousel-card" id="card-upload">
-                    <h2>Stage 1: Upload CSV File</h2>
-                    <p>Select a CSV file to begin the processing workflow. The file will be cached for continuous re-processing.</p>
-                    <div class="control-group">
-                        <label for="csv-file-input">Select or Drag CSV File:</label>
-                        <input type="file" id="csv-file-input" accept=".csv">
-                        <p id="uploaded-file-name" style="margin-top: 15px; font-weight: 600; display: none;">
-                            <i data-feather="file" style="vertical-align: middle;"></i> Current File: <span></span>
+            <div class="container">
+                <div class="carousel-track" id="carousel-track">
+                    <!-- STAGE 1: UPLOAD -->
+                    <div class="carousel-card" id="card-upload">
+                        <h2>Stage 1: Upload CSV File</h2>
+                        <p>
+                            Select a CSV file to begin the processing workflow.
+                            The file will be cached for continuous
+                            re-processing.
                         </p>
-                    </div>
-                    <button class="action-button submit-button" id="next-to-options" disabled>Next: Configure Options <i data-feather="arrow-right" style="vertical-align: middle;"></i></button>
-                </div>
-                
-                <!-- STAGE 2: OPTIONS -->
-                <div class="carousel-card" id="card-options">
-                    <h2>Stage 2: Processing Options</h2>
-                    <p>Configure the data cleaning, filtering, and sorting parameters. Click 'Process Data' when ready.</p>
-                    
-                    <!-- (f & g) Sort Data By Column -->
-                    <div class="control-group">
-                        <label for="sort-column-select">Sort Data By Column (Optional):</label>
-                        <select id="sort-column-select">
-                            <!-- Options populated by JS, including 'NO_SORT' -->
-                        </select>
+                        <div class="control-group">
+                            <label for="csv-file-input"
+                                >Select or Drag CSV File:</label
+                            >
+                            <input
+                                type="file"
+                                id="csv-file-input"
+                                accept=".csv"
+                            />
+                            <p
+                                id="uploaded-file-name"
+                                style="
+                                    margin-top: 15px;
+                                    font-weight: 600;
+                                    display: none;
+                                "
+                            >
+                                <i
+                                    data-feather="file"
+                                    style="vertical-align: middle"
+                                ></i>
+                                Current File: <span></span>
+                            </p>
+                        </div>
+                        <button
+                            class="action-button submit-button"
+                            id="next-to-options"
+                            disabled
+                        >
+                            Next: Configure Options
+                            <i
+                                data-feather="arrow-right"
+                                style="vertical-align: middle"
+                            ></i>
+                        </button>
                     </div>
 
-                    <!-- (f) Columns to Ignore (for empty rows) -->
-                    <div class="control-group">
-                        <label>Columns to Ignore When Removing Empty Rows:</label>
-                        <div id="ignore-columns-list">
-                            <!-- Checkboxes populated by JS -->
+                    <!-- STAGE 2: OPTIONS -->
+                    <div class="carousel-card" id="card-options">
+                        <h2>Stage 2: Processing Options</h2>
+                        <p>
+                            Configure the data cleaning, filtering, and sorting
+                            parameters. Click 'Process Data' when ready.
+                        </p>
+
+                        <!-- (f & g) Sort Data By Column -->
+                        <div class="control-group">
+                            <label for="sort-column-select"
+                                >Sort Data By Column (Optional):</label
+                            >
+                            <select id="sort-column-select">
+                                <!-- Options populated by JS, including 'NO_SORT' -->
+                            </select>
+                        </div>
+
+                        <!-- (f) Columns to Ignore (for empty rows) -->
+                        <div class="control-group">
+                            <label
+                                >Columns to Ignore When Removing Empty
+                                Rows:</label
+                            >
+                            <div id="ignore-columns-list">
+                                <!-- Checkboxes populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- (f & c) Filter Expression -->
+                        <div class="control-group">
+                            <label for="filter-query-input"
+                                >Filter Expression (Pandas `df.query()` syntax,
+                                e.g., `Value > 100`):</label
+                            >
+                            <input
+                                type="text"
+                                id="filter-query-input"
+                                placeholder="e.g., Age > 30 and City == 'New York'"
+                            />
+                        </div>
+
+                        <!-- (f & b) Remove Duplicates -->
+                        <div class="control-group checkbox-item">
+                            <input
+                                type="checkbox"
+                                id="remove-duplicates-checkbox"
+                            />
+                            <label for="remove-duplicates-checkbox"
+                                >Remove Duplicate Rows</label
+                            >
+                        </div>
+
+                        <!-- (d) Submission Button -->
+                        <button
+                            class="action-button submit-button"
+                            id="submit-button"
+                        >
+                            Process Data
+                            <i
+                                data-feather="cpu"
+                                style="vertical-align: middle"
+                            ></i>
+                        </button>
+
+                        <div
+                            class="loading"
+                            id="loading-message"
+                            style="display: none"
+                        >
+                            <i
+                                data-feather="loader"
+                                class="feather-loading"
+                                style="vertical-align: middle"
+                            ></i>
+                            Processing data, please wait...
                         </div>
                     </div>
 
-                    <!-- (f & c) Filter Expression -->
-                    <div class="control-group">
-                        <label for="filter-query-input">Filter Expression (Pandas `df.query()` syntax, e.g., `Value > 100`):</label>
-                        <input type="text" id="filter-query-input" placeholder="e.g., 'Age > 30 and City == \"New York\"'">
-                    </div>
+                    <!-- STAGE 3: RESULTS/DOWNLOAD -->
+                    <div class="carousel-card" id="card-results">
+                        <h2>Stage 3: Results & Download</h2>
+                        <p>
+                            Your processed data is ready for preview and
+                            download. Use the back arrow to re-configure and
+                            re-process.
+                        </p>
 
-                    <!-- (f & b) Remove Duplicates -->
-                    <div class="control-group checkbox-item">
-                        <input type="checkbox" id="remove-duplicates-checkbox">
-                        <label for="remove-duplicates-checkbox">Remove Duplicate Rows</label>
-                    </div>
-                    
-                    <!-- (d) Submission Button -->
-                    <button class="action-button submit-button" id="submit-button">Process Data <i data-feather="cpu" style="vertical-align: middle;"></i></button>
+                        <!-- (a) Download Buttons -->
+                        <div
+                            class="download-group"
+                            id="download-link-container"
+                            style="display: none"
+                        >
+                            <div class="download-link">
+                                <a
+                                    id="download-link-csv"
+                                    href="#"
+                                    download="processed_data.csv"
+                                    >Download CSV
+                                    <i
+                                        data-feather="download"
+                                        style="vertical-align: middle"
+                                    ></i
+                                ></a>
+                            </div>
+                            <div class="download-link">
+                                <button
+                                    class="action-button zip-button"
+                                    id="download-link-zip"
+                                >
+                                    Download ZIP
+                                    <i
+                                        data-feather="archive"
+                                        style="vertical-align: middle"
+                                    ></i>
+                                </button>
+                            </div>
+                        </div>
 
-                    <div class="loading" id="loading-message" style="display: none;">
-                        <i data-feather="loader" class="feather-loading" style="vertical-align: middle;"></i> Processing data, please wait...
+                        <div id="results-container">
+                            <p>
+                                No data processed yet. Return to Stage 2 to run
+                                the process.
+                            </p>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- STAGE 3: RESULTS/DOWNLOAD -->
-                <div class="carousel-card" id="card-results">
-                    <h2>Stage 3: Results & Download</h2>
-                    <p>Your processed data is ready for preview and download. Use the back arrow to re-configure and re-process.</p>
-                    
-                    <!-- (a) Download Buttons -->
-                    <div class="download-group" id="download-link-container" style="display: none;">
-                        <div class="download-link">
-                            <a id="download-link-csv" href="#" download="processed_data.csv">Download CSV <i data-feather="download" style="vertical-align: middle;"></i></a>
-                        </div>
-                        <div class="download-link">
-                            <button class="action-button zip-button" id="download-link-zip">Download ZIP <i data-feather="archive" style="vertical-align: middle;"></i></button>
-                        </div>
-                    </div>
-                    
-                    <div id="results-container">
-                        <p>No data processed yet. Return to Stage 2 to run the process.</p>
-                    </div>
-                </div>
-
+            <!-- (c) Navigation Arrows OUTSIDE the container -->
+            <div class="nav-container-wrapper">
+                <button class="nav-button" id="nav-prev" disabled>
+                    <i data-feather="arrow-left" width="24" height="24"></i>
+                </button>
+                <button class="nav-button" id="nav-next" disabled>
+                    <i data-feather="arrow-right" width="24" height="24"></i>
+                </button>
             </div>
         </div>
-        
-        <!-- (c) Navigation Arrows OUTSIDE the container -->
-        <div class="nav-container-wrapper">
-            <button class="nav-button" id="nav-prev" disabled>
-                <i data-feather="arrow-left" width="24" height="24"></i>
-            </button>
-            <button class="nav-button" id="nav-next" disabled>
-                <i data-feather="arrow-right" width="24" height="24"></i>
-            </button>
-        </div>
-    </div>
 
-    <script>
-        const fileInput = document.getElementById('csv-file-input');
-        const uploadedFileNameSpan = document.querySelector('#uploaded-file-name span');
-        const uploadedFileNameContainer = document.getElementById('uploaded-file-name');
-        const nextToOptionsButton = document.getElementById('next-to-options');
-        const sortColumnSelect = document.getElementById('sort-column-select');
-        const ignoreColumnsList = document.getElementById('ignore-columns-list');
-        const filterQueryInput = document.getElementById('filter-query-input');
-        const removeDuplicatesCheckbox = document.getElementById('remove-duplicates-checkbox');
-        const submitButton = document.getElementById('submit-button');
-        const resultsContainer = document.getElementById('results-container');
-        const loadingMessage = document.getElementById('loading-message');
-        const downloadLinkContainer = document.getElementById('download-link-container');
-        const downloadLinkCsv = document.getElementById('download-link-csv');
-        const downloadLinkZip = document.getElementById('download-link-zip');
-        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        <script>
+            const fileInput = document.getElementById("csv-file-input");
+            const uploadedFileNameSpan = document.querySelector(
+                "#uploaded-file-name span",
+            );
+            const uploadedFileNameContainer =
+                document.getElementById("uploaded-file-name");
+            const nextToOptionsButton =
+                document.getElementById("next-to-options");
+            const sortColumnSelect =
+                document.getElementById("sort-column-select");
+            const ignoreColumnsList = document.getElementById(
+                "ignore-columns-list",
+            );
+            const filterQueryInput =
+                document.getElementById("filter-query-input");
+            const removeDuplicatesCheckbox = document.getElementById(
+                "remove-duplicates-checkbox",
+            );
+            const submitButton = document.getElementById("submit-button");
+            const resultsContainer =
+                document.getElementById("results-container");
+            const loadingMessage = document.getElementById("loading-message");
+            const downloadLinkContainer = document.getElementById(
+                "download-link-container",
+            );
+            const downloadLinkCsv =
+                document.getElementById("download-link-csv");
+            const downloadLinkZip =
+                document.getElementById("download-link-zip");
+            const darkModeToggle = document.getElementById("dark-mode-toggle");
 
-        const carouselTrack = document.getElementById('carousel-track');
-        const navPrev = document.getElementById('nav-prev');
-        const navNext = document.getElementById('nav-next');
+            const carouselTrack = document.getElementById("carousel-track");
+            const navPrev = document.getElementById("nav-prev");
+            const navNext = document.getElementById("nav-next");
 
-        let uploadedFile = null; 
-        let processedCsvText = ''; 
-        let currentCard = 0; 
-        const MAX_CARDS = 2; 
-        const BACKEND_URL = ''; 
+            let uploadedFile = null;
+            let processedCsvText = "";
+            let currentCard = 0;
+            const MAX_CARDS = 2;
+            const BACKEND_URL = "";
 
-        feather.replace();
+            feather.replace();
 
-        // --- Dark Mode Logic ---
-        function setDarkMode(isDark) {
-            if (isDark) {
-                document.documentElement.classList.add('dark-mode');
-                localStorage.setItem('theme', 'dark');
+            // --- Dark Mode Logic ---
+            function setDarkMode(isDark) {
+                if (isDark) {
+                    document.documentElement.classList.add("dark-mode");
+                    localStorage.setItem("theme", "dark");
+                } else {
+                    document.documentElement.classList.remove("dark-mode");
+                    localStorage.setItem("theme", "light");
+                }
+            }
+
+            const savedTheme = localStorage.getItem("theme");
+            if (savedTheme === "dark") {
+                darkModeToggle.checked = true;
+                setDarkMode(true);
+            } else if (
+                !savedTheme &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches
+            ) {
+                darkModeToggle.checked = true;
+                setDarkMode(true);
             } else {
-                document.documentElement.classList.remove('dark-mode');
-                localStorage.setItem('theme', 'light');
-            }
-        }
-
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            darkModeToggle.checked = true;
-            setDarkMode(true);
-        } else if (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            darkModeToggle.checked = true;
-            setDarkMode(true);
-        } else {
-             setDarkMode(false);
-        }
-        
-        darkModeToggle.addEventListener('change', (e) => {
-            setDarkMode(e.target.checked);
-        });
-        
-        // --- Carousel Logic (e) ---
-        function goToCard(index) {
-            if (index < 0 || index > MAX_CARDS) return;
-            
-            // Forward movement check
-            if (index > currentCard && currentCard === 0 && !uploadedFile) return;
-
-            currentCard = index;
-            // The carousel needs to move 100% of the *track* for each card since the track is 300% wide
-            carouselTrack.style.transform = `translateX(-${(currentCard * 0.85) * (100 / (MAX_CARDS + 1))}%)`;
-
-            // Update nav buttons
-            navPrev.disabled = currentCard === 0;
-            // navNext is only enabled for stage 0 if a file is uploaded, and for stage 1 (options) to get to stage 2 (results)
-            navNext.disabled = currentCard === MAX_CARDS || (currentCard === 0 && !uploadedFile);
-        }
-
-        navPrev.addEventListener('click', () => goToCard(currentCard - 1));
-        navNext.addEventListener('click', () => goToCard(currentCard + 1));
-        nextToOptionsButton.addEventListener('click', () => goToCard(1));
-
-        // --- Stage 1: Upload Logic (h) ---
-        fileInput.addEventListener('change', async (event) => {
-            const file = event.target.files[0];
-            if (!file) {
-                uploadedFile = null;
-                uploadedFileNameContainer.style.display = 'none';
-                nextToOptionsButton.disabled = true;
-                navNext.disabled = true;
-                return;
+                setDarkMode(false);
             }
 
-            uploadedFile = file;
-            uploadedFileNameSpan.textContent = file.name;
-            uploadedFileNameContainer.style.display = 'block';
-            nextToOptionsButton.disabled = false;
-            
-            if (currentCard === 0) navNext.disabled = false;
-
-            await fetchAndPopulateColumns(file);
-        });
-        
-        async function fetchAndPopulateColumns(file) {
-            const formData = new FormData();
-            formData.append('csv_file', file);
-
-            try {
-                const response = await fetch(`${BACKEND_URL}/get-columns`, {
-                    method: 'POST',
-                    body: formData,
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                populateControls(data.columns);
-
-            } catch (error) {
-                console.error('Error fetching columns:', error);
-                alert('Failed to read CSV headers. Please check file format.');
-                nextToOptionsButton.disabled = true;
-                submitButton.disabled = true;
-            }
-        }
-
-        function populateControls(columns) {
-            sortColumnSelect.innerHTML = '<option value="NO_SORT">-- Do Not Sort --</option>';
-            columns.forEach(col => {
-                const option = document.createElement('option');
-                option.value = col;
-                option.textContent = col;
-                sortColumnSelect.appendChild(option);
+            darkModeToggle.addEventListener("change", (e) => {
+                setDarkMode(e.target.checked);
             });
 
-            ignoreColumnsList.innerHTML = '';
-            columns.forEach(col => {
-                const div = document.createElement('div');
-                div.classList.add('checkbox-item');
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.id = `ignore-${col}`;
-                checkbox.value = col;
-                
-                const label = document.createElement('label');
-                label.htmlFor = `ignore-${col}`;
-                label.textContent = col;
+            // --- Carousel Logic (e) ---
+            function goToCard(index) {
+                if (index < 0 || index > MAX_CARDS) return;
 
-                div.appendChild(checkbox);
-                div.appendChild(label);
-                ignoreColumnsList.appendChild(div);
-            });
-            submitButton.disabled = false;
-        }
+                // Forward movement check
+                if (index > currentCard && currentCard === 0 && !uploadedFile)
+                    return;
 
-        // --- Stage 2: Processing Logic ---
-        submitButton.addEventListener('click', async () => {
-            if (!uploadedFile) {
-                alert('Please upload a CSV file first (Stage 1).');
-                return;
+                currentCard = index;
+                // The carousel needs to move 100% of the *track* for each card since the track is 300% wide
+                carouselTrack.style.transform = `translateX(-${currentCard * 0.85 * (100 / (MAX_CARDS + 1))}%)`;
+
+                // Update nav buttons
+                navPrev.disabled = currentCard === 0;
+                // navNext is only enabled for stage 0 if a file is uploaded, and for stage 1 (options) to get to stage 2 (results)
+                navNext.disabled =
+                    currentCard === MAX_CARDS ||
+                    (currentCard === 0 && !uploadedFile);
             }
-            
-            const formData = new FormData();
-            
-            // (h) Send the cached file content
-            formData.append('csv_file', uploadedFile); 
 
-            // Get selected options
-            formData.append('sort_column', sortColumnSelect.value);
-            const ignoredCheckboxes = Array.from(ignoreColumnsList.querySelectorAll('input[type="checkbox"]:checked'));
-            formData.append('ignored_columns', ignoredCheckboxes.map(cb => cb.value).join(','));
-            formData.append('filter_query', filterQueryInput.value);
-            formData.append('remove_duplicates', removeDuplicatesCheckbox.checked);
+            navPrev.addEventListener("click", () => goToCard(currentCard - 1));
+            navNext.addEventListener("click", () => goToCard(currentCard + 1));
+            nextToOptionsButton.addEventListener("click", () => goToCard(1));
 
-            // UI state change
-            submitButton.disabled = true;
-            loadingMessage.style.display = 'block';
-            downloadLinkContainer.style.display = 'none';
-            resultsContainer.innerHTML = '';
-
-            try {
-                const response = await fetch(`${BACKEND_URL}/process-data`, {
-                    method: 'POST',
-                    body: formData,
-                });
-                
-                if (!response.ok) {
-                    let errorText = await response.text();
-                    try {
-                        const errorData = JSON.parse(errorText);
-                        errorText = errorData.error || errorText;
-                    } catch { /* not JSON */ }
-                    throw new Error(`Processing Failed! ${errorText}`);
+            // --- Stage 1: Upload Logic (h) ---
+            fileInput.addEventListener("change", async (event) => {
+                const file = event.target.files[0];
+                if (!file) {
+                    uploadedFile = null;
+                    uploadedFileNameContainer.style.display = "none";
+                    nextToOptionsButton.disabled = true;
+                    navNext.disabled = true;
+                    return;
                 }
 
-                processedCsvText = await response.text();
-                displayCsvWithGridJs(processedCsvText);
-                setupDownloadLinks(processedCsvText);
+                uploadedFile = file;
+                uploadedFileNameSpan.textContent = file.name;
+                uploadedFileNameContainer.style.display = "block";
+                nextToOptionsButton.disabled = false;
 
-                goToCard(2); 
+                if (currentCard === 0) navNext.disabled = false;
 
-            } catch (error) {
-                console.error('Error processing data:', error);
-                resultsContainer.innerHTML = `<p style="color: red; border-color: red;">Error: ${error.message}</p>`;
-                downloadLinkContainer.style.display = 'none';
-            } finally {
-                submitButton.disabled = false;
-                loadingMessage.style.display = 'none';
-            }
-        });
+                await fetchAndPopulateColumns(file);
+            });
 
-        // --- Stage 3: Results & Download Logic ---
-        function setupDownloadLinks(csvText) {
-            const blob = new Blob([csvText], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            downloadLinkCsv.href = url;
-            
-            downloadLinkZip.onclick = async () => {
+            async function fetchAndPopulateColumns(file) {
+                const formData = new FormData();
+                formData.append("csv_file", file);
+
                 try {
-                    const response = await fetch(`${BACKEND_URL}/download-zip`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'text/csv'
-                        },
-                        body: csvText,
+                    const response = await fetch(`${BACKEND_URL}/get-columns`, {
+                        method: "POST",
+                        body: formData,
                     });
 
                     if (!response.ok) {
-                        throw new Error(`ZIP Download failed! Status: ${response.status}`);
+                        const errorData = await response.json();
+                        throw new Error(
+                            errorData.error ||
+                                `HTTP error! Status: ${response.status}`,
+                        );
                     }
-                    
-                    const zipBlob = await response.blob();
-                    const zipUrl = URL.createObjectURL(zipBlob);
-                    
-                    const a = document.createElement('a');
-                    a.href = zipUrl;
-                    a.download = 'processed_data.zip';
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                    URL.revokeObjectURL(zipUrl);
 
+                    const data = await response.json();
+                    populateControls(data.columns);
                 } catch (error) {
-                    console.error('ZIP Error:', error);
-                    alert('Failed to create and download ZIP file.');
+                    console.error("Error fetching columns:", error);
+                    alert(
+                        "Failed to read CSV headers. Please check file format.",
+                    );
+                    nextToOptionsButton.disabled = true;
+                    submitButton.disabled = true;
                 }
-            };
-            
-            downloadLinkContainer.style.display = 'flex';
-        }
-
-        // --- Grid Display ---
-        function displayCsvWithGridJs(csvText) {
-            const lines = csvText.trim().split('\n');
-            if (lines.length < 1 || lines.length === 1 && lines[0].trim() === '') {
-                resultsContainer.innerHTML = '<p>No data returned or file is empty after filtering/cleaning.</p>';
-                return;
             }
 
-            const headers = lines[0].split(',').map(h => h.trim());
-            const data = lines.slice(1).map(line => line.split(','));
+            function populateControls(columns) {
+                sortColumnSelect.innerHTML =
+                    '<option value="NO_SORT">-- Do Not Sort --</option>';
+                columns.forEach((col) => {
+                    const option = document.createElement("option");
+                    option.value = col;
+                    option.textContent = col;
+                    sortColumnSelect.appendChild(option);
+                });
 
-            resultsContainer.innerHTML = '';
+                ignoreColumnsList.innerHTML = "";
+                columns.forEach((col) => {
+                    const div = document.createElement("div");
+                    div.classList.add("checkbox-item");
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = `ignore-${col}`;
+                    checkbox.value = col;
 
-            new gridjs.Grid({
-                columns: headers,
-                data: data,
-                search: true,
-                sort: true,
-                pagination: {
-                    limit: 10
-                },
-                style: {
-                    table: {
-                        'white-space': 'nowrap',
-                        'width': '100%'
-                    }
+                    const label = document.createElement("label");
+                    label.htmlFor = `ignore-${col}`;
+                    label.textContent = col;
+
+                    div.appendChild(checkbox);
+                    div.appendChild(label);
+                    ignoreColumnsList.appendChild(div);
+                });
+                submitButton.disabled = false;
+            }
+
+            // --- Stage 2: Processing Logic ---
+            submitButton.addEventListener("click", async () => {
+                if (!uploadedFile) {
+                    alert("Please upload a CSV file first (Stage 1).");
+                    return;
                 }
-            }).render(resultsContainer);
-        }
 
-        // Initial setup
-        goToCard(0);
-    </script>
+                const formData = new FormData();
 
-</body>
+                // (h) Send the cached file content
+                formData.append("csv_file", uploadedFile);
+
+                // Get selected options
+                formData.append("sort_column", sortColumnSelect.value);
+                const ignoredCheckboxes = Array.from(
+                    ignoreColumnsList.querySelectorAll(
+                        'input[type="checkbox"]:checked',
+                    ),
+                );
+                formData.append(
+                    "ignored_columns",
+                    ignoredCheckboxes.map((cb) => cb.value).join(","),
+                );
+                formData.append("filter_query", filterQueryInput.value);
+                formData.append(
+                    "remove_duplicates",
+                    removeDuplicatesCheckbox.checked,
+                );
+
+                // UI state change
+                submitButton.disabled = true;
+                loadingMessage.style.display = "block";
+                downloadLinkContainer.style.display = "none";
+                resultsContainer.innerHTML = "";
+
+                try {
+                    const response = await fetch(
+                        `${BACKEND_URL}/process-data`,
+                        {
+                            method: "POST",
+                            body: formData,
+                        },
+                    );
+
+                    if (!response.ok) {
+                        let errorText = await response.text();
+                        try {
+                            const errorData = JSON.parse(errorText);
+                            errorText = errorData.error || errorText;
+                        } catch {
+                            /* not JSON */
+                        }
+                        throw new Error(`Processing Failed! ${errorText}`);
+                    }
+
+                    processedCsvText = await response.text();
+                    displayCsvWithGridJs(processedCsvText);
+                    setupDownloadLinks(processedCsvText);
+
+                    goToCard(2);
+                } catch (error) {
+                    console.error("Error processing data:", error);
+                    resultsContainer.innerHTML = `<p style="color: red; border-color: red;">Error: ${error.message}</p>`;
+                    downloadLinkContainer.style.display = "none";
+                } finally {
+                    submitButton.disabled = false;
+                    loadingMessage.style.display = "none";
+                }
+            });
+
+            // --- Stage 3: Results & Download Logic ---
+            function setupDownloadLinks(csvText) {
+                const blob = new Blob([csvText], { type: "text/csv" });
+                const url = URL.createObjectURL(blob);
+                downloadLinkCsv.href = url;
+
+                downloadLinkZip.onclick = async () => {
+                    try {
+                        const response = await fetch(
+                            `${BACKEND_URL}/download-zip`,
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "text/csv",
+                                },
+                                body: csvText,
+                            },
+                        );
+
+                        if (!response.ok) {
+                            throw new Error(
+                                `ZIP Download failed! Status: ${response.status}`,
+                            );
+                        }
+
+                        const zipBlob = await response.blob();
+                        const zipUrl = URL.createObjectURL(zipBlob);
+
+                        const a = document.createElement("a");
+                        a.href = zipUrl;
+                        a.download = "processed_data.zip";
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                        URL.revokeObjectURL(zipUrl);
+                    } catch (error) {
+                        console.error("ZIP Error:", error);
+                        alert("Failed to create and download ZIP file.");
+                    }
+                };
+
+                downloadLinkContainer.style.display = "flex";
+            }
+
+            // --- Grid Display ---
+            function displayCsvWithGridJs(csvText) {
+                const lines = csvText.trim().split("\n");
+                if (
+                    lines.length < 1 ||
+                    (lines.length === 1 && lines[0].trim() === "")
+                ) {
+                    resultsContainer.innerHTML =
+                        "<p>No data returned or file is empty after filtering/cleaning.</p>";
+                    return;
+                }
+
+                const headers = lines[0].split(",").map((h) => h.trim());
+                const data = lines.slice(1).map((line) => line.split(","));
+
+                resultsContainer.innerHTML = "";
+
+                new gridjs.Grid({
+                    columns: headers,
+                    data: data,
+                    search: true,
+                    sort: true,
+                    pagination: {
+                        limit: 10,
+                    },
+                    style: {
+                        table: {
+                            "white-space": "nowrap",
+                            width: "100%",
+                        },
+                    },
+                }).render(resultsContainer);
+            }
+
+            // Initial setup
+            goToCard(0);
+        </script>
+    </body>
 </html>
