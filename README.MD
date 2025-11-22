@@ -17,8 +17,8 @@ Some concepts and tools we used includes:
 - GitHub, CSVkit, importing CSV files (from Case 3) 
 - Creating an app.py, flask, and API (from Case 4) 
 - Building a front end and back end (from Case 7) 
-<br>
-**Architecture**
+
+## Architecture
 ![diagram showing the architecture of our project](./assets/architecture.png)
 
 ## How to Run 
@@ -30,16 +30,22 @@ Some concepts and tools we used includes:
 ![stage 1 of the final application](./assets/stage_1.png)
 ![stage 2 of the final application](./assets/stage_2.png)
 ![stage 3 of the final application](./assets/stage_3.png)
+<br>
 **Feature: Selecting columns in the CSV to ignore**
 ![columns-to-ignore selection feature implementation of an earlier version of the application](./assets/ignore_column_selection.png)
+<br>
 **Feature: Select a column to sort the data by**
 ![column sort feature implementation of an earlier version of the application](./assets/column_sort_selection.png)
+<br>
 **Feature: Filter expression**
 ![filter expression feature implementation of an earlier version of the application](./assets/filter_expression.png)
+<br>
 **Feature: Removing duplicate rows**
 ![remove duplicates feature implementation of an earlier version of the application](./assets/remove_duplicates.png)
+<br>
 **Feature: Allowing user to download a compressed version of the CSV file**
 ![compressed download feature implementation of an earlier version of the application](./assets/compressed_download.png)
+<br>
 **Feature: Download the file in different formats.**
 ![file format feature implementation of an earlier version of the application](./assets/file_format.png)
 
