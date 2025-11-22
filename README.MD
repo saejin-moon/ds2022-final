@@ -17,8 +17,8 @@ Some concepts and tools we used includes:
 - GitHub, CSVkit, importing CSV files (from Case 3) 
 - Creating an app.py, flask, and API (from Case 4) 
 - Building a front end and back end (from Case 7) 
-<br>
-**Architecture**
+
+## Architecture
 ![diagram showing the architecture of our project](./assets/architecture.png)
 
 ## How to Run 
