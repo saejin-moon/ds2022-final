@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, send_file
 import io
 import zipfile
 from flask_cors import CORS
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -98,29 +99,57 @@ def get_columns():
     except Exception as e:
         return jsonify({'error': f'Error reading CSV headers: {e}'}), 500
 
-@app.route('/download-zip', methods=['POST'])
-def download_zip():
-    # Expects the processed CSV data as text in the request body
+@app.route('/download-file', methods=['POST'])
+def download_file():
     csv_data = request.data.decode('utf-8')
+    file_format = request.args.get('format', 'csv').lower()
 
     if not csv_data:
         return jsonify({'error': 'No processed data received.'}), 400
     
-    # Create a BytesIO buffer to hold the ZIP file
-    zip_buffer = io.BytesIO()
-    
-    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zf:
-        # Write the CSV data to a file inside the ZIP archive
-        zf.writestr('processed_data.csv', csv_data)
+    try:
+        df = pd.read_csv(io.StringIO(csv_data))
+    except Exception as e:
+        return jsonify({'error': f'Error reading CSV data into DataFrame: {e}'}), 500
 
-    zip_buffer.seek(0)
+    buffer = io.BytesIO()
+    download_name = 'processed_data'
+    mimetype = ''
+
+    if file_format == 'csv':
+        df.to_csv(buffer, index=False)
+        mimetype = 'text/csv'
+        download_name += '.csv'
+        buffer.seek(0)
+        
+    elif file_format == 'json':
+        df.to_json(buffer, orient='records', indent=4)
+        mimetype = 'application/json'
+        download_name += '.json'
+        buffer.seek(0)
+
+    elif file_format == 'excel':
+        df.to_excel(buffer, index=False, engine='xlsxwriter')
+        mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        download_name += '.xlsx'
+        buffer.seek(0)
+
+    elif file_format == 'zip':
+        with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as zf:
+            zf.writestr('processed_data.csv', csv_data)
+        mimetype = 'application/zip'
+        download_name += '.zip'
+        buffer.seek(0)
     
+    else:
+        return jsonify({'error': f'Unsupported file format: {file_format}'}), 400
+
     return send_file(
-        zip_buffer,
-        mimetype='application/zip',
+        buffer,
+        mimetype=mimetype,
         as_attachment=True,
-        download_name='processed_data.zip'
+        download_name=download_name
     )
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5001)

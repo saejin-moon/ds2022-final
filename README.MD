@@ -1,3 +1,55 @@
-<center><strong>PROJECT: GRAHAM CRACKER</strong></center> <br>
-<center><i>Breaking Data into Digestible Pieces</i></center> <br>
-hehehe
+# PROJECT GRAHAM CRACKER
+*Breaking Data into Digestible Pieces*
+
+---
+
+By: Pavi Gupta, Liana Kim, Sae-Jin Moon, Anh Phan, Daniel Son, Esther Yun
+
+---
+
+## Executive Summary 
+A CSV (comma-separated values) file is a plain text file that stores tables of data and organizes with rows and columns. These files are important in the world of data because they are simple, universally compatible, and easy to store, transfer, and share. However, these files often contain a jumble of unorganized data that makes it hard to analyze and understand.  
+<br>
+Through Project GRAHAM Cracker, we hope to help data scientists clean up their files. Users will have the ability to upload their file and pick parameters that they want their data to be organized by. For example, they can select an option for the data to be organized to remove any duplicate cells. They will then be able to download the organized file in a variety of formats to use and analyze in any way they see fit. The frontend is very accessible and easy to understand, allowing anyone from a beginner coder to a seasoned data scientist to customize and organize their data.
+
+## System Overview 
+Some concepts and tools we used includes:
+- GitHub, CSVkit, importing CSV files (from Case 3) 
+- Creating an app.py, flask, and API (from Case 4) 
+- Building a front end and back end (from Case 7) 
+<br>
+**Architecture**
+![diagram showing the architecture of our project](./assets/architecture.png)
+
+## How to Run 
+![bash instructions to run docker](./assets/how_to_run.png)
+
+## Results and Evaluation
+**What the front end looks like from the user’s perspective**
+![stage 1 of the final application](./assets/stage_1.png)
+![stage 2 of the final application](./assets/stage_2.png)
+![stage 3 of the final application](./assets/stage_3.png)
+**Feature: Selecting columns in the CSV to ignore**
+![columns-to-ignore selection feature implementation of an earlier version of the application](./assets/ignore_column_selection.png)
+**Feature: Select a column to sort the data by**
+![column sort feature implementation of an earlier version of the application](./assets/column_sort_selection.png)
+**Feature: Filter expression**
+![filter expression feature implementation of an earlier version of the application](./assets/filter_expression.png)
+**Feature: Removing duplicate rows**
+![remove duplicates feature implementation of an earlier version of the application](./assets/remove_duplicates.png)
+**Feature: Allowing user to download a compressed version of the CSV file**
+![compressed download feature implementation of an earlier version of the application](./assets/compressed_download.png)
+**Feature: Download the file in different formats.**
+![file format feature implementation of an earlier version of the application](./assets/file_format.png)
+
+## What's Next
+In the future, we can improve this by adding more features for the user to access. Some of these features include: 
+- Changing language and grammar in the data to be more legible without changing the meaning of it. 
+- Standardizing capitalization across the cells (ex. Headers and titles become uppercase and cells are lowercase) 
+- Profiling the columns: Printing out the different types of data, how many cells are empty, etc. 
+- Stretch features: Allowing the user to upload more types of files than just CSV files, allow the user to create an account that stores all the files that they have uploaded for their storage.
+- Caching some values input by the user so they do not need to select their preferences repeatedly every time they refresh their page. This will lead to a more seamless, improved user experience.  
+- Making major aesthetic changes to make it more uniform, improve light/dark mode settings, and increase accessibility for color blind users.  
+
+## Links
+**Github**: [Project Repository](https://www.github.com/saejin-moon/ds2022-final)

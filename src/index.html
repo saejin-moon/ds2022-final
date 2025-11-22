@@ -363,6 +363,16 @@
                 text-decoration: none;
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             }
+            .download-link button {
+                padding: 12px 0;
+                width: 100%;
+                box-sizing: border-box;
+                background-color: var(--download-bg);
+            }
+            .download-link button:hover {
+                background-color: var(--download-hover-bg);
+                transform: translateY(-2px);
+            }
             .action-button.submit-button {
                 background-color: var(--submit-bg);
             }
@@ -381,12 +391,14 @@
             /* Download Buttons */
             .download-group {
                 display: flex;
+                flex-wrap: wrap;
                 gap: 15px;
                 margin-top: 25px;
             }
             .download-group .download-link {
                 flex: 1;
                 display: block;
+                min-width: 140px;
             }
             .download-link a {
                 padding: 12px 0;
@@ -398,6 +410,30 @@
                 background-color: var(--download-hover-bg);
                 transform: translateY(-2px);
             }
+            
+            /* New styles for download dropdown and button */
+            .download-action-group {
+                padding: 15px; /* Separate group for the controls */
+            }
+            
+            .download-controls {
+                display: flex;
+                gap: 10px;
+            }
+            
+            #download-format-select {
+                flex: 1; /* Dropdown takes more space */
+                width: auto; /* Override 100% width from general select rule */
+            }
+            
+            .download-trigger {
+                flex: 1; /* Button takes remaining space */
+                background-color: var(--download-bg);
+            }
+            .download-trigger:hover {
+                background-color: var(--download-hover-bg);
+            }
+            
             .zip-button {
                 background-color: var(--zip-bg) !important;
             }
@@ -771,52 +807,26 @@
                         </div>
                     </div>
 
-                    <!-- STAGE 3: RESULTS/DOWNLOAD -->
                     <div class="carousel-card" id="card-results">
                         <h2>Stage 3: Results & Download</h2>
-                        <p>
-                            Your processed data is ready for preview and
-                            download. Use the back arrow to re-configure and
-                            re-process.
-                        </p>
-
-                        <!-- (a) Download Buttons -->
-                        <div
-                            class="download-group"
-                            id="download-link-container"
-                            style="display: none"
-                        >
-                            <div class="download-link">
-                                <a
-                                    id="download-link-csv"
-                                    href="#"
-                                    download="processed_data.csv"
-                                    >Download CSV
-                                    <i
-                                        data-feather="download"
-                                        style="vertical-align: middle"
-                                    ></i
-                                ></a>
-                            </div>
-                            <div class="download-link">
-                                <button
-                                    class="action-button zip-button"
-                                    id="download-link-zip"
-                                >
-                                    Download ZIP
-                                    <i
-                                        data-feather="archive"
-                                        style="vertical-align: middle"
-                                    ></i>
-                                </button>
+                        <p>Your processed data is ready for preview and download. Use the back arrow to re-configure and re-process.</p>
+                        
+                        <!-- New Download Group -->
+                        <div class="control-group download-action-group" id="download-action-group" style="display: none;">
+                            <label for="download-format-select">Select Download Format:</label>
+                            <div class="download-controls">
+                                <select id="download-format-select">
+                                    <option value="csv">CSV (.csv)</option>
+                                    <option value="zip">ZIP (.zip - containing CSV)</option>
+                                    <option value="json">JSON (.json)</option>
+                                    <option value="excel">Excel (.xlsx)</option>
+                                </select>
+                                <button class="action-button download-trigger" id="download-trigger-button">Download File <i data-feather="download" style="vertical-align: middle;"></i></button>
                             </div>
                         </div>
-
+                        
                         <div id="results-container">
-                            <p>
-                                No data processed yet. Return to Stage 2 to run
-                                the process.
-                            </p>
+                            <p>No data processed yet. Return to Stage 2 to run the process.</p>
                         </div>
                     </div>
                 </div>
@@ -853,16 +863,9 @@
                 "remove-duplicates-checkbox",
             );
             const submitButton = document.getElementById("submit-button");
-            const resultsContainer =
+            let resultsContainer =
                 document.getElementById("results-container");
             const loadingMessage = document.getElementById("loading-message");
-            const downloadLinkContainer = document.getElementById(
-                "download-link-container",
-            );
-            const downloadLinkCsv =
-                document.getElementById("download-link-csv");
-            const downloadLinkZip =
-                document.getElementById("download-link-zip");
             const darkModeToggle = document.getElementById("dark-mode-toggle");
 
             const carouselTrack = document.getElementById("carousel-track");
@@ -870,10 +873,14 @@
             const navNext = document.getElementById("nav-next");
 
             let uploadedFile = null;
-            let processedCsvText = "";
             let currentCard = 0;
             const MAX_CARDS = 2;
             const BACKEND_URL = "";
+            let processedCsvText = '';
+            const downloadActionGroup = document.getElementById('download-action-group');
+            const downloadFormatSelect = document.getElementById('download-format-select');
+            const downloadTriggerButton = document.getElementById('download-trigger-button');
+
 
             feather.replace();
 
@@ -927,8 +934,19 @@
             }
 
             navPrev.addEventListener("click", () => goToCard(currentCard - 1));
-            navNext.addEventListener("click", () => goToCard(currentCard + 1));
-            nextToOptionsButton.addEventListener("click", () => goToCard(1));
+            navNext.addEventListener("click", () => {
+                const nextCardIndex = currentCard + 1;
+                
+                // Check if we are moving from the Options card (1) to the Results card (2)
+                if (currentCard === 1 && nextCardIndex === 2) {
+                    // Instead of just moving the carousel, trigger the processing logic
+                    submitButton.click();
+                    // The submitButton's logic will handle processing, updating the display, and calling goToCard(2) on success.
+                } else {
+                    // For all other moves (0 -> 1, or just staying on 2), use the standard move
+                    goToCard(nextCardIndex);
+                }
+            });            nextToOptionsButton.addEventListener("click", () => goToCard(1));
 
             // --- Stage 1: Upload Logic (h) ---
             fileInput.addEventListener("change", async (event) => {
@@ -1043,7 +1061,6 @@
                 // UI state change
                 submitButton.disabled = true;
                 loadingMessage.style.display = "block";
-                downloadLinkContainer.style.display = "none";
                 resultsContainer.innerHTML = "";
 
                 try {
@@ -1068,61 +1085,64 @@
 
                     processedCsvText = await response.text();
                     displayCsvWithGridJs(processedCsvText);
-                    setupDownloadLinks(processedCsvText);
-
+                    setupDownloadTrigger(processedCsvText);
                     goToCard(2);
                 } catch (error) {
                     console.error("Error processing data:", error);
                     resultsContainer.innerHTML = `<p style="color: red; border-color: red;">Error: ${error.message}</p>`;
-                    downloadLinkContainer.style.display = "none";
                 } finally {
                     submitButton.disabled = false;
                     loadingMessage.style.display = "none";
                 }
             });
-
-            // --- Stage 3: Results & Download Logic ---
-            function setupDownloadLinks(csvText) {
-                const blob = new Blob([csvText], { type: "text/csv" });
-                const url = URL.createObjectURL(blob);
-                downloadLinkCsv.href = url;
-
-                downloadLinkZip.onclick = async () => {
+            
+            function setupDownloadTrigger(csvText) {
+                processedCsvText = csvText; // Store for the button click
+                downloadActionGroup.style.display = 'block'; // Show the control group
+            
+                downloadTriggerButton.onclick = async () => {
+                    const format = downloadFormatSelect.value;
+                    
                     try {
-                        const response = await fetch(
-                            `${BACKEND_URL}/download-zip`,
-                            {
-                                method: "POST",
-                                headers: {
-                                    "Content-Type": "text/csv",
-                                },
-                                body: csvText,
+                        const response = await fetch(`${BACKEND_URL}/download-file?format=${format}`, {
+                            method: 'POST',
+                            headers: {
+                                // Tell the backend we are sending CSV text
+                                'Content-Type': 'text/csv' 
                             },
-                        );
-
+                            body: processedCsvText, // Send the stored CSV data
+                        });
+            
                         if (!response.ok) {
-                            throw new Error(
-                                `ZIP Download failed! Status: ${response.status}`,
-                            );
+                            // Read error message from response if possible
+                            let errorText = await response.text();
+                            try {
+                                const errorData = JSON.parse(errorText);
+                                errorText = errorData.error || errorText;
+                            } catch { /* not JSON */ }
+                            throw new Error(`Download failed: ${errorText}`);
                         }
-
-                        const zipBlob = await response.blob();
-                        const zipUrl = URL.createObjectURL(zipBlob);
-
-                        const a = document.createElement("a");
-                        a.href = zipUrl;
-                        a.download = "processed_data.zip";
+                        
+                        // Get filename from response header or guess based on format
+                        const contentDisposition = response.headers.get('Content-Disposition');
+                        let filename = contentDisposition ? contentDisposition.split('filename=')[1].replace(/"/g, '') : `processed_data.${format === 'excel' ? 'xlsx' : format}`;
+                        
+                        const blob = await response.blob();
+                        const url = URL.createObjectURL(blob);
+                        
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename;
                         document.body.appendChild(a);
                         a.click();
                         a.remove();
-                        URL.revokeObjectURL(zipUrl);
+                        URL.revokeObjectURL(url);
+            
                     } catch (error) {
-                        console.error("ZIP Error:", error);
-                        alert("Failed to create and download ZIP file.");
+                        console.error('Download Error:', error);
+                        alert(`Download failed: ${error.message}`);
                     }
                 };
-
-                downloadLinkContainer.style.display = "flex";
             }
 
             // --- Grid Display ---
@@ -1136,12 +1156,26 @@
                         "<p>No data returned or file is empty after filtering/cleaning.</p>";
                     return;
                 }
-
+            
                 const headers = lines[0].split(",").map((h) => h.trim());
                 const data = lines.slice(1).map((line) => line.split(","));
-
-                resultsContainer.innerHTML = "";
-
+            
+                // --- FIX: Create a new container element for a guaranteed clean render ---
+                
+                // 1. Get the parent of the resultsContainer
+                const parent = resultsContainer.parentElement;
+            
+                // 2. Remove the existing resultsContainer
+                resultsContainer.remove();
+            
+                // 3. Create a brand new container element with the same ID
+                const newResultsContainer = document.createElement('div');
+                newResultsContainer.id = "results-container";
+                
+                // 4. Append the new container to the parent
+                parent.appendChild(newResultsContainer);
+                
+                // 5. Render Grid.js into the new container
                 new gridjs.Grid({
                     columns: headers,
                     data: data,
@@ -1156,7 +1190,10 @@
                             width: "100%",
                         },
                     },
-                }).render(resultsContainer);
+                }).render(newResultsContainer);
+                
+                // 6. Re-assign the global variable to the new element
+                resultsContainer = newResultsContainer; 
             }
 
             // Initial setup
