@@ -24,6 +24,7 @@ Some concepts and tools we used includes:
 ## How to Run 
 ![bash instructions to run docker](./assets/how_to_run.png)
 
+
 ## Results and Evaluation
 **What the front end looks like from the user’s perspective**
 ![stage 1 of the final application](./assets/stage_1.png)
