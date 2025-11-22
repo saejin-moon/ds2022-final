@@ -24,6 +24,10 @@ Some concepts and tools we used includes:
 ## How to Run 
 ![bash instructions to run docker](./assets/how_to_run.png)
 
+## Design Decisions
+As data scientists, we have experienced working with CSV files first-hand, and felt the frustrations of disorganized headers, empty cells, and undecipherable data. We felt that this would be a useful tool for anyone working with CSV files, regardless of their field or type of data that they are working with. Some alternative ideas that we considered were a cloud storage application to manage personal media and an OCR application to transcribe handwritten notes to a digital document. 
+
+We do not limit the number of requests to our backend, so there is the possibility of it crashing from too many requests. Additionally, we could be prone to XSS (cross-site scripting) attacks or hacking. There is no tangible cost to maintaining this program, however, if we wanted to make it more secure and add even more features, it would take more time and effort to execute and maintain. We do not collect any personal data of the user. While the uploaded CSV file does temporarily get saved in RAM, it never gets saved on our end. One possible limitation for us to investigate in the future would be to understand the size limit for the file upload. We were able to make many successful runs with a variety of CSV files, but we have yet to find the maximum size a file can be before it can no longer be accepted. 
 
 ## Results and Evaluation
 <ins>What the front end looks like from the user’s perspective</ins>
