@@ -26,27 +26,27 @@ Some concepts and tools we used includes:
 
 
 ## Results and Evaluation
-**What the front end looks like from the user’s perspective**
+<ins>What the front end looks like from the user’s perspective</ins>
 ![stage 1 of the final application](./assets/stage_1.png)
 ![stage 2 of the final application](./assets/stage_2.png)
 ![stage 3 of the final application](./assets/stage_3.png)
 <br>
-**Feature: Selecting columns in the CSV to ignore**
+<ins>Feature: Selecting columns in the CSV to ignore</ins>
 ![columns-to-ignore selection feature implementation of an earlier version of the application](./assets/ignore_column_selection.png)
 <br>
-**Feature: Select a column to sort the data by**
+<ins>Feature: Select a column to sort the data by</ins>
 ![column sort feature implementation of an earlier version of the application](./assets/column_sort_selection.png)
 <br>
-**Feature: Filter expression**
+<ins>Feature: Filter expression</ins>
 ![filter expression feature implementation of an earlier version of the application](./assets/filter_expression.png)
 <br>
-**Feature: Removing duplicate rows**
+<ins>Feature: Removing duplicate rows</ins>
 ![remove duplicates feature implementation of an earlier version of the application](./assets/remove_duplicates.png)
 <br>
-**Feature: Allowing user to download a compressed version of the CSV file**
+<ins>Feature: Allowing user to download a compressed version of the CSV file</ins>
 ![compressed download feature implementation of an earlier version of the application](./assets/compressed_download.png)
 <br>
-**Feature: Download the file in different formats.**
+<ins>Feature: Download the file in different formats.</ins>
 ![file format feature implementation of an earlier version of the application](./assets/file_format.png)
 
 ## What's Next
