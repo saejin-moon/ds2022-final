@@ -15,3 +15,5 @@ Some concepts and tools we used includes:
 - Building a front end and back end (from Case 7) 
 
 **Architecture**
+
+[Screenshot 2025-11-22 at 4.49.12 PM.pdf](https://github.com/user-attachments/files/23691948/Screenshot.2025-11-22.at.4.49.12.PM.pdf)
