@@ -59,6 +59,7 @@ In the future, we can improve this by adding more features for the user to acces
 - Standardizing capitalization across the cells (ex. Headers and titles become uppercase and cells are lowercase) 
 - Profiling the columns: Printing out the different types of data, how many cells are empty, etc. 
 - Stretch features: Allowing the user to upload more types of files than just CSV files, allow the user to create an account that stores all the files that they have uploaded for their storage.
+
 Code refactors:
 - Caching some values input by the user so they do not need to select their preferences repeatedly every time they refresh their page. This will lead to a more seamless, improved user experience.  
 - Making major aesthetic changes to make it more uniform, improve light/dark mode settings, and increase accessibility for color blind users.  
