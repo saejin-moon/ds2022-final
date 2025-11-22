@@ -14,6 +14,37 @@ Some concepts and tools we used includes:
 - Creating an app.py, flask, and API (from Case 4) 
 - Building a front end and back end (from Case 7) 
 
-**Architecture**
+<ins>Architecture</ins>
 
-[Screenshot 2025-11-22 at 4.49.12 PM.pdf](https://github.com/user-attachments/files/23691948/Screenshot.2025-11-22.at.4.49.12.PM.pdf)
+<img width="992" height="458" alt="Image" src="https://github.com/user-attachments/assets/cbfde054-f85f-449e-b642-c9ce5467cb48" />
+
+**How to Run**
+
+**Design Decisions**
+
+**Results & Evaluation**
+<ins>What the front end looks like from the user's perspective</ins>
+
+<ins>Feature: Selecting columns in the CSV to ignore</ins>
+
+<ins>Feature: Filter expression</ins>
+
+<ins>Feature: Removing duplicate rows</ins>
+
+<ins>Feature: Allowing user to download a compressed version of the CSV file</ins>
+
+<ins>Feature: View results of the changes and download the file for personal use</ins>
+
+**What's next?**
+In the future, we can improve this by adding more features for the user to access. Some of these features include: 
+- Changing language and grammar in the data to be more legible without changing the meaning of it. 
+- Standardizing capitalization across the cells (ex. Headers and titles become uppercase and cells are lowercase) 
+- Profiling the columns: Printing out the different types of data, how many cells are empty, etc. 
+- Stretch features: Allowing the user to upload more types of files than just CSV files, allow the user to create an account that stores all the files that they have uploaded for their storage.  
+
+Code refactors: 
+- Caching some values input by the user so they do not need to select their preferences repeatedly every time they refresh their page. This will lead to a more seamless, improved user experience.  
+- Making major aesthetic changes to make it more uniform, improve light/dark mode settings, and increase accessibility for color blind users.  
+
+**Links**
+GitHub: https://github.com/saejin-moon/ds2022-final 
